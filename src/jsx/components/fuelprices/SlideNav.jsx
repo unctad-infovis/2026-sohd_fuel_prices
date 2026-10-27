@@ -82,7 +82,7 @@ export default function SlideNav() {
     if (cur < 0) scrollToSection(0);
     else if (cur < n - 1) scrollToSection(cur + 1);
     else {
-      const footer = document.querySelector(`${ROOT} .footer_container`);
+      const footer = document.querySelector(`${ROOT} .block--quote`);
       if (footer) scrollToY(footer.getBoundingClientRect().top + window.scrollY);
     }
   };

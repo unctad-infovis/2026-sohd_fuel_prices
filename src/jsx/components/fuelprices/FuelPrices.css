@@ -133,7 +133,8 @@
     background-color: var(--fp-tint);
     background-image: var(--fp-moire);
   }
-  .block--intro {
+  .block--intro,
+  .block--quote {
     isolation: isolate;
     &::after {
       background-image:
@@ -1365,6 +1366,109 @@
       .key_body {
         opacity: 1;
         transform: none;
+      }
+    }
+  }
+  .block--quote {
+    background: var(--un-color-blue-darkest);
+    color: #fff;
+    padding: 120px 0;
+    .quote {
+      padding-left: 88px;
+      position: relative;
+      @media (max-width: 600px) {
+        padding-left: 56px;
+      }
+    }
+    .quote_text {
+      font-size: clamp(var(--un-font-size-xl), 3.8vw, calc(var(--un-font-size-xxxl) * 1.15));
+      font-weight: var(--un-font-weight-bold);
+      letter-spacing: -0.02em;
+      line-height: var(--un-line-height-small);
+      max-width: 20em;
+      &::before {
+        background-color: var(--un-color-yellow);
+        content: '';
+        height: 44px;
+        left: 0;
+        mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 62 44'><path d='M0.6 27 C1.5 13 8 4 21 0 L23 4.5 C15 8 11 12 10.2 16.9 A14 14 0 1 1 0.6 27 Z M34.6 27 C35.5 13 42 4 55 0 L57 4.5 C49 8 45 12 44.2 16.9 A14 14 0 1 1 34.6 27 Z'/></svg>") no-repeat center / contain;
+        -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 62 44'><path d='M0.6 27 C1.5 13 8 4 21 0 L23 4.5 C15 8 11 12 10.2 16.9 A14 14 0 1 1 0.6 27 Z M34.6 27 C35.5 13 42 4 55 0 L57 4.5 C49 8 45 12 44.2 16.9 A14 14 0 1 1 34.6 27 Z'/></svg>") no-repeat center / contain;
+        position: absolute;
+        top: 4px;
+        width: 62px;
+        @media (max-width: 600px) {
+          height: 30px;
+          width: 42px;
+        }
+      }
+    }
+    .quote_caption {
+      font-size: var(--un-font-size-xxs);
+      margin-top: 28px;
+      opacity: 0.85;
+    }
+    .quote_name {
+      display: block;
+      font-size: var(--un-font-size-xs);
+      font-weight: var(--un-font-weight-bolder);
+    }
+    .quote_links {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 44px;
+      padding-left: 88px;
+      position: relative;
+      z-index: 3;
+      @media (max-width: 600px) {
+        padding-left: 56px;
+      }
+    }
+    a.quote_download {
+      align-items: center;
+      background: var(--un-color-yellow);
+      border-radius: 100px;
+      color: var(--un-color-grey-darkest);
+      display: inline-flex;
+      font-size: var(--un-font-size-xs);
+      font-weight: var(--un-font-weight-bold);
+      gap: 10px;
+      padding: 12px 18px;
+      text-decoration: none;
+      transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+      &:hover {
+        box-shadow:
+          0 10px 32px color-mix(in srgb, var(--un-color-yellow) 50%, transparent),
+          0 0 0 6px color-mix(in srgb, var(--un-color-yellow) 12%, transparent);
+        transform: translateY(-2px);
+      }
+      svg {
+        flex: 0 0 auto;
+        height: 18px;
+        width: 18px;
+      }
+    }
+    a.quote_more {
+      align-items: center;
+      border-bottom: 1px solid color-mix(in srgb, #fff 40%, transparent);
+      color: #fff;
+      display: inline-flex;
+      font-size: var(--un-font-size-xxs);
+      font-weight: var(--un-font-weight-semibold);
+      gap: 10px;
+      padding: 6px 0;
+      text-decoration: none;
+      transition: gap 0.2s ease;
+      &:hover {
+        gap: 16px;
+      }
+      svg {
+        flex: 0 0 auto;
+        height: 16px;
+        width: 16px;
       }
     }
   }
