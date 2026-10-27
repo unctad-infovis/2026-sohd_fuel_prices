@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with this repository. Interactive data story built with Vite + React + MDX + D3; content in `src/Article.mdx`, charts as React components. No test framework.
 
-Read `README.md` first: the "Implementation notes" section describes what was built, file map, gotchas and TODOs.
+Read `README.md` first for the overview, status and content workflow; the file map, gotchas and TODOs are below.
 
 ## What was done
 * Ported the graphic designers' prototype (`/Users/teelmo/Downloads/Hormuz_interactive_for_IT/src/{app.js,markup.html,styles.css}`, plain HTML/D3) to React components, in the structure of `../2026-sohd_storyboard`.
