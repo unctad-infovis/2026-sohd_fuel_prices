@@ -1119,9 +1119,9 @@
       margin: 14px 0 10px;
       min-height: 2.4em;
       @media (max-width: 760px) {
-        justify-content: flex-start;
-        margin: 0 0 6px;
+        margin: 30px 0 6px;
         min-height: 0;
+        text-align: center;
       }
     }
     .globe_chart {

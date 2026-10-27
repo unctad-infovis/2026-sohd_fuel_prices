@@ -39,8 +39,10 @@ function globePath(rings, lon0, lat0, c, R) {
   return d;
 }
 
-/** One small line chart per region, under its globe: first and last values labelled, no tooltip. */
-function regionChart(col, r, animate, f) {
+/** One small line chart per region, under its globe: first and last values labelled, no tooltip.
+ *  The frame (conflict band, grid, axis) is drawn at once so the space is reserved; the line and its labels
+ *  are drawn hidden and revealed by the returned `play` (animated) or `show` (at once). */
+function regionChart(col, r, f) {
   const el = col.select('.globe_chart').node();
   const T = f.t;
   const n = T.length;
@@ -136,17 +138,21 @@ function regionChart(col, r, animate, f) {
     .attr('y', base - bh / 2 + 5)
     .attr('text-anchor', 'middle')
     .text(`${v[n - 1].toFixed(1)}%`);
-  if (!animate) {
-    late.classed('is-on', true);
-    return;
-  }
   const L = path.node().getTotalLength();
-  path.style('stroke-dasharray', L).style('stroke-dashoffset', L);
-  tween(
-    1800,
-    t => path.style('stroke-dashoffset', L * (1 - d3.easeCubicInOut(t))),
-    () => late.classed('is-on', true)
-  );
+  // The gap is longer than the line so the hidden line leaves no round-cap dot at its end
+  path.style('stroke-dasharray', `${L} ${2 * L}`).style('stroke-dashoffset', L);
+  return {
+    play: () =>
+      tween(
+        1800,
+        t => path.style('stroke-dashoffset', L * (1 - d3.easeCubicInOut(t))),
+        () => late.classed('is-on', true)
+      ),
+    show: () => {
+      path.style('stroke-dashoffset', 0);
+      late.classed('is-on', true);
+    }
+  };
 }
 
 export default function GlobeTrio() {
@@ -197,7 +203,16 @@ export default function GlobeTrio() {
       g.draw(g.rot);
       globes.push(g);
     });
-    // On reveal the globes turn together, paint their region, then the three lines draw together
+    // 'idle': line still hidden; 'playing' / 'done': line shown or drawing
+    const drawChart = g => {
+      g.chart = regionChart(g.col, g.r, DATA.infl);
+      if (g.state !== 'idle') g.chart.show();
+    };
+    for (const g of globes) {
+      g.state = 'idle';
+      drawChart(g);
+    }
+    // On reveal the globes turn together and paint their region; the empty charts are already there, and the three lines draw together once the globes have turned
     const stop = onceVisible(
       el,
       instant => {
@@ -205,7 +220,8 @@ export default function GlobeTrio() {
           if (instant) {
             g.draw(g.r.rot);
             g.paint(true);
-            regionChart(g.col, g.r, false, DATA.infl);
+            g.state = 'done';
+            g.chart.show();
             continue;
           }
           const from = g.rot.slice();
@@ -219,7 +235,12 @@ export default function GlobeTrio() {
             },
             () => {
               g.paint(true);
-              timers.push(setTimeout(() => regionChart(g.col, g.r, true, DATA.infl), 350));
+              timers.push(
+                setTimeout(() => {
+                  g.state = 'playing';
+                  g.chart.play();
+                }, 350)
+              );
             }
           );
         }
@@ -227,9 +248,9 @@ export default function GlobeTrio() {
       0.3
     );
 
-    // Charts that have already drawn are redrawn at the new width
+    // Charts are redrawn at the new width (the line stays hidden until its turn)
     redrawRef.current = () => {
-      for (const g of globes) if (g.col.select('svg[role=img]').size()) regionChart(g.col, g.r, false, DATA.infl);
+      for (const g of globes) drawChart(g);
     };
     return () => {
       stop();
