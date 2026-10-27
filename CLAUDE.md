@@ -17,16 +17,16 @@ Read `README.md` first for the overview, status and content workflow; the file m
 ## Files (`src/jsx/components/fuelprices/`)
 * `helpers.js` – `useFuelData()` loads the single JSON once; `useWidthRedraw`, `onceVisible`, formatting helpers.
 * `Block.jsx`, `ChartParts.jsx` – shared section wrapper (`.block > .block_inner`, `data-nav` label feeds SlideNav), titles, legends, source/note.
-* One file per chart/section: `OilChart`, `FuelsChart`, `MapScrolly` (scrolly steps) with `FuelMap` (official UN map: Highcharts + map-tools; only economies above the 20% threshold are highlighted), `TornadoChart` (vulnerable economies), `TankChart` (cost of a tank), `GapChart` (inflation), `GlobeTrio` (regional inflation), `TagsChart` (households), `KeyConsiderations`, `Intro`, `Statement` (`PumpStatement`, `CostStatement`).
+* One file per chart/section: `OilChart`, `FuelsChart`, `MapScrolly` (scrolly steps) with `MapFind` (search and result box) and `FuelMap` (official UN map: Highcharts + map-tools; only economies above the 20% threshold are highlighted), `TornadoChart` (vulnerable economies), `TankChart` (cost of a tank), `GapChart` (inflation), `GlobeTrio` (regional inflation), `TagsChart` (households), `KeyConsiderations`, `Intro`, `Statement` (`PumpStatement`, `CostStatement`).
 * `Sprite.jsx` + `sprite.svg` – inline SVG symbols; must be in the same document because `url(#fp-hatch-yellow)` and `<use href="#ic-*">` need local ids.
-* `FuelPrices.css` – all section styles (scoped under `#app-root-2026-sohd_fuel_prices .app`). `Header/Footer/SlideNav` `.jsx/.css` – adapted from the storyboard.
-* `src/jsx/App.css` – design-token extras only. The moire/gradient page background lives once on `.app` in `FuelPrices.css`; do not repaint it on `.fp_container` (that doubled the lines and made the page noisier than the storyboard).
-* Data: `public/assets/data/2026-sohd_fuel_prices_data.json`. Images: `public/assets/img/2026-sohd_fuel_prices_{main,guterres,unctad_logo_white,unctad_logo_black}`.
+* `FuelPrices.css` – all section styles (scoped under `#app-root-2026-sohd_fuel_prices .app`). `Header/SlideNav` `.jsx/.css` – adapted from the storyboard. `Footer.jsx` is the designers' text-only quote block (`.block--quote`, navy with the moire overlay shared with the intro) plus the report links (download, more publications, World of Debt, Trade and Development Report; URLs in `meta.json`); its styles live in `FuelPrices.css`.
+* `src/jsx/App.css` – design-token extras only. The moire/gradient page background lives once on `.app` (one viewport-sized `position: fixed` `::before` with lines and wash; no `background-attachment: fixed`, no page-tall layer, both gave artefacts) in `FuelPrices.css`; do not repaint it on `.fp_container` (that doubled the lines and made the page noisier than the storyboard).
+* Data: `public/assets/data/2026-sohd_fuel_prices_data.json`. Images: `public/assets/img/2026-sohd_fuel_prices_{main,unctad_logo_white}`.
 
 ## Gotchas
 * `.app h3/h4/p` base styles from general-tools are neutralised by `.block :where(h2,h3,h4,p,figure,blockquote){max-width:none;padding:0}`.
-* Hero/footer background images are passed as CSS variables with an absolute URL (`new URL(..., document.baseURI)`), otherwise the relative `url()` resolves against the stylesheet and the image 404s.
-* `Header.jsx` also hosts the `#hero-photo-grade` SVG filter used by `Footer.css`.
+* The hero background image is passed as CSS variables with an absolute URL (`new URL(..., document.baseURI)`), otherwise the relative `url()` resolves against the stylesheet and the image 404s.
+* `Header.jsx` also hosts the `#hero-photo-grade` SVG filter used by `Header.css`.
 * No `!important` anywhere: the reduced-motion block in `FuelPrices.css` uses `&&` (doubled parent selector) to out-rank the section rules; the diesel icon flip is the `.flip` utility class; keep descending-specificity clean by ordering rules from low to high specificity.
 * Verifying with headless Chrome: `--virtual-time-budget` stalls IntersectionObserver reveals, so use real-time scrolling (CDP) to judge animations.
 
@@ -45,7 +45,7 @@ Read `README.md` first for the overview, status and content workflow; the file m
 * Reuse storyboard/general-tools components before writing new ones; scope CSS under `#app-root-2026-sohd_fuel_prices .app`; CSS properties alphabetical, nested rules; use `--un-*` tokens only.
 * Source lines start with "UN Trade and Development (UNCTAD)".
 * Chart subtitles end with a full stop (the titles do). Axis labels use `--un-color-grey-darkest`; x-axis years are bold. The conflict annotation text comes from `conflictLabel` in `helpers.js`.
-* Map colours (`mapClasses.js`): five classes, two blues up to 20% and three reds above it, hatched stripes for no data; the big number in the step text uses `--un-color-red-text` to match the reds.
+* Map colours (`mapClasses.js`, from the designers' second mockup): five classes, two blues up to 20% then yellow, orange and red above it, hatched stripes for no data; the big number and the fuel word in the step text use the same yellow-to-red gradient (`.maps_big`, `.maps_hl`). `MapFind.jsx` is the "Find an economy" search with a result box (outlines the economy on the map via `foundCode` in `FuelMap.jsx`).
 * Slide-by-slide review: log every agreed change in `tmp/review-changes.md` (git-ignored) so it can be summarised for colleagues by email after the review.
 
 ## Commands

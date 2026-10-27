@@ -82,7 +82,7 @@ These packages are published from the [`un-init-project`](https://github.com/unc
 
 * **d3** — used to create the charts and the globes (scales, shapes; the globes use a hand-written orthographic projection in `GlobeTrio.jsx`, not `d3-geo`). The globe geometry is inside the single data JSON
 * **highcharts** and **@unctad-infovis/map-tools** — the official UN world map (`FuelMap.jsx`, based on the `react-vite-highcharts-map` template; topology in `public/assets/data/worldmap-economies-54030.topo.json`, copied from the `un-init-project` template, 10 June 2026 version)
-* `minisite-tools` is deliberately not used; `Header`, `Footer` and `SlideNav` are local adaptations of the storyboard versions
+* `minisite-tools` is deliberately not used; `Header` and `SlideNav` are local adaptations of the storyboard versions
 
 ### Build & Dev Server
 
