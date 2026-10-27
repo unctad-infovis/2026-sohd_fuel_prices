@@ -985,7 +985,7 @@
       color: var(--un-color-grey-darkest);
       font-size: var(--un-font-size-xxs);
       font-weight: var(--un-font-weight-bold);
-      text-align: right;
+      text-align: left;
     }
     .income_n {
       color: var(--un-color-grey-text);
