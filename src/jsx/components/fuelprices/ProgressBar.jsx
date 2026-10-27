@@ -31,8 +31,8 @@ export default function ProgressBar() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="progress">
-      <span className="progress_bar" ref={barRef} />
+    <div aria-hidden="true" className="read_progress">
+      <span className="read_progress_bar" ref={barRef} />
     </div>
   );
 }

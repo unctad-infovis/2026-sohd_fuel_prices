@@ -118,14 +118,17 @@
       transform: none;
     }
   }
-  /* Reading progress: sticks to the top of the viewport while the report content scrolls, takes no space in the flow */
-  .progress {
+  /* Reading progress: sticks to the top of the viewport while the report content scrolls, takes no space in the flow. Not named .progress, which the host site's Bootstrap styles as a grey track */
+  .read_progress {
+    background: transparent;
+    display: block;
     height: 3px;
     margin-bottom: -3px;
+    overflow: visible;
     position: sticky;
     top: 0;
     z-index: 60;
-    .progress_bar {
+    .read_progress_bar {
       background: var(--un-color-blue);
       display: block;
       height: 100%;
