@@ -1,6 +1,14 @@
-export function ChartHeader({ icon, subtitle, title }) {
+import ButtonShare from '@unctad-infovis/general-tools/components/ButtonShare.jsx';
+import { createContext, useContext } from 'react';
+
+/** Publication URL that the share buttons above the chart titles point to (set once in App.jsx). */
+export const ShareUrl = createContext('');
+
+export function ChartHeader({ icon, share = true, subtitle, title }) {
+  const url = useContext(ShareUrl);
   return (
     <div className="chart_header">
+      {share && url && <ButtonShare defaultOpen iconBg="#fff" iconColor="#000" iconHoverBg="#009edb" iconHoverColor="#fff" position="static" showLabel={false} size={30} url={url} />}
       <h3 className="chart_header_title">{title}</h3>
       {subtitle && (
         <h4 className={`chart_header_subtitle${icon ? ' chart_header_subtitle--icon' : ''}`}>

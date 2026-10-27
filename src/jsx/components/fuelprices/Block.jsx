@@ -4,7 +4,7 @@ import { isStill } from './helpers.js';
 const REVEAL = '.chart_header, .legend, .meta, .insight, .statement';
 
 /** Page section: optional inner wrapper (max-width) and a fade-up reveal for headers, legends and source lines. */
-export default function Block({ children, className = '', id, inner = true, nav, tinted }) {
+export default function Block({ children, className = '', id, inner = true, tinted }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Block({ children, className = '', id, inner = true, nav,
   }, []);
 
   return (
-    <section className={`block${tinted ? ' block--tinted' : ''}${className ? ` ${className}` : ''}`} data-nav={nav} id={id} ref={ref}>
+    <section className={`block${tinted ? ' block--tinted' : ''}${className ? ` ${className}` : ''}`} id={id} ref={ref}>
       {inner ? <div className="block_inner">{children}</div> : children}
     </section>
   );

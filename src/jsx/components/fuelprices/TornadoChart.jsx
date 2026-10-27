@@ -53,7 +53,7 @@ export default function TornadoChart() {
   const label = L ? `Increase of local retail prices of diesel and gasoline in least developed countries: ${L.map(d => `${d.n}, diesel +${d.d}%, gasoline +${d.g}%`).join('; ')}.` : undefined;
 
   return (
-    <Block id="fp-ldc" nav="Vulnerable economies" tinted>
+    <Block id="fp-ldc" tinted>
       <ChartHeader
         subtitle="Increase of local retail prices of diesel and gasoline for least developed countries, in per cent."
         title={

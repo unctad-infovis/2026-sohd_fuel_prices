@@ -131,7 +131,7 @@ export default function FuelsChart() {
   useWidthRedraw(draw, !!payload);
 
   return (
-    <Block id="fp-fuels" nav="Fuels">
+    <Block id="fp-fuels" tinted>
       <ChartHeader
         subtitle="Index: average for the period 1 Sep 2025 – 27 Feb 2026 = 100."
         title={

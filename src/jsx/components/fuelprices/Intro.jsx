@@ -36,7 +36,7 @@ export default function Intro() {
 
   return (
     <div ref={ref}>
-      <Block className="block--intro" id="fp-intro" inner={false} nav="Introduction">
+      <Block className="block--intro" id="fp-intro" inner={false}>
         <svg aria-hidden="true" className="intro_waves" viewBox="-500 -500 1000 1000">
           {[140, 260, 380].map(r => (
             <circle className="intro_trace" key={r} r={r} />

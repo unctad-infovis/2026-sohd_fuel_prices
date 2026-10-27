@@ -214,7 +214,7 @@ export default function GapChart() {
   useWidthRedraw(draw, !!payload);
 
   return (
-    <Block id="fp-inflation" nav="Inflation" tinted>
+    <Block id="fp-inflation" tinted>
       <ChartHeader
         subtitle="Monthly year-on-year inflation rate in developed and developing countries, median by country group."
         title={

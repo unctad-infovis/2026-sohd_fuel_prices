@@ -4,11 +4,11 @@
 
 ## About
 
-Interactive web version of the UN Trade and Development (UNCTAD) report on the Strait of Hormuz disruptions: "Soaring fuel prices and the burden of inflation". Rebuilt from the graphic designers' HTML/D3 prototype as a Vite + React + MDX project, structured like `../2026-sohd_storyboard` (Header, Footer, ButtonShare and the right-hand `SlideNav` are adapted from it).
+Interactive web version of the UN Trade and Development (UNCTAD) report on the Strait of Hormuz disruptions: "Soaring fuel prices and the burden of inflation". Rebuilt from the graphic designers' HTML/D3 prototype as a Vite + React + MDX project, structured like `../2026-sohd_storyboard` (Header, Footer and ButtonShare are adapted from it).
 
 Content and layout live in `src/Article.mdx`. Components are in `src/jsx/components/fuelprices/` (oil, fuels, map scrolly, tornado, tank, inflation gap, globes, tags, key considerations). All data comes from `public/assets/data/2026-sohd_fuel_prices_data.json`, loaded once by `helpers.js`.
 
-The page is a scrollytelling minisite: a hero header, ten navigable sections (right-hand dot navigation), two full-screen statements, charts (D3), a scrolly map, and a footer with a quote and links to the full report. It is a standalone React application embeddable in UNCTAD's Drupal platform. The report itself is not yet published, so title, URLs and some copy may change.
+The page is a scrollytelling minisite: a hero header, ten sections, a thin reading-progress bar, two full-screen statements, charts (D3), a scrolly map, and a footer with a quote and links to the full report. It is a standalone React application embeddable in UNCTAD's Drupal platform. The report itself is not yet published, so title, URLs and some copy may change.
 
 ## Content workflow
 
@@ -82,7 +82,7 @@ These packages are published from the [`un-init-project`](https://github.com/unc
 
 * **d3** — used to create the charts and the globes (scales, shapes; the globes use a hand-written orthographic projection in `GlobeTrio.jsx`, not `d3-geo`). The globe geometry is inside the single data JSON
 * **highcharts** and **@unctad-infovis/map-tools** — the official UN world map (`FuelMap.jsx`, based on the `react-vite-highcharts-map` template; topology in `public/assets/data/worldmap-economies-54030.topo.json`, copied from the `un-init-project` template, 10 June 2026 version)
-* `minisite-tools` is deliberately not used; `Header` and `SlideNav` are local adaptations of the storyboard versions
+* `minisite-tools` is deliberately not used; `Header` is a local adaptation of the storyboard version
 
 ### Build & Dev Server
 

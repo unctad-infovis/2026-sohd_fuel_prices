@@ -1,5 +1,6 @@
 import Article from '../Article.mdx';
 
+import { ShareUrl } from './components/fuelprices/ChartParts.jsx';
 import Footer from './components/fuelprices/Footer.jsx';
 import FuelsChart from './components/fuelprices/FuelsChart.jsx';
 import GapChart from './components/fuelprices/GapChart.jsx';
@@ -10,7 +11,6 @@ import KeyConsiderations from './components/fuelprices/KeyConsiderations.jsx';
 import MapScrolly from './components/fuelprices/MapScrolly.jsx';
 import OilChart from './components/fuelprices/OilChart.jsx';
 import ProgressBar from './components/fuelprices/ProgressBar.jsx';
-import SlideNav from './components/fuelprices/SlideNav.jsx';
 import Sprite from './components/fuelprices/Sprite.jsx';
 import { CostStatement, PumpStatement } from './components/fuelprices/Statement.jsx';
 import TagsChart from './components/fuelprices/TagsChart.jsx';
@@ -34,7 +34,6 @@ const components = {
   OilChart,
   ProgressBar,
   PumpStatement,
-  SlideNav,
   Sprite,
   TagsChart,
   TankChart,
@@ -44,7 +43,9 @@ const components = {
 const App = ({ meta }) => {
   return (
     <div className="app">
-      <Article components={components} meta={meta} />
+      <ShareUrl.Provider value={meta.url}>
+        <Article components={components} meta={meta} />
+      </ShareUrl.Provider>
     </div>
   );
 };

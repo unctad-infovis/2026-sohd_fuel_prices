@@ -6,20 +6,20 @@ Read `README.md` first for the overview, status and content workflow; the file m
 
 ## What was done
 * Ported the graphic designers' prototype (`/Users/teelmo/Downloads/Hormuz_interactive_for_IT/src/{app.js,markup.html,styles.css}`, plain HTML/D3) to React components, in the structure of `../2026-sohd_storyboard`.
-* Reused from the storyboard: `Header`, `Footer`, `SlideNav` (right-hand dot navigation, `slide_nav*` classes), `ButtonShare` (general-tools), `Index.jsx` (`?header=false|true` param), text sizes/colours for subtitles, source/note and body text.
+* Reused from the storyboard: `Header`, `Footer`, `ButtonShare` (general-tools), `Index.jsx` (`?header=false|true` param), text sizes/colours for subtitles, source/note and body text.
 * Header follows the designers' cover (bottom-left title, yellow subtitle highlight, yellow PDF button, blue gradient overlay, date top right) with the share links placed above the title.
-* Chart titles are black; only the highlighted phrase uses the accent colour (`--un-color-blue-text` etc.), with the blue arrow mask from the storyboard.
+* Chart titles are dark blue (`--un-color-blue-darkest`); the highlighted phrase is UN blue (`--un-color-blue`), except "developing Asia and Oceania" in the regions title, which is brown (`--un-color-yellow-darkest`); the blue arrow mask is from the storyboard.
 * Charts: straight 5px lines, space as thousands separator, `prefers-reduced-motion` skips animations, responsive redraw on width change.
 
 ## Page structure (`src/Article.mdx`)
-`Header` then `<div className="fp_container">`: `Sprite`, `ProgressBar` (3px reading progress, sticky at the top of the viewport), `SlideNav`, `Intro`, `OilChart`, `FuelsChart`, `PumpStatement`, `MapScrolly`, `TornadoChart`, `CostStatement`, `TankChart`, `GapChart`, `GlobeTrio`, `TagsChart`, `KeyConsiderations`; then `Footer`. All are registered in `src/jsx/App.jsx`.
+`Header` then `<div className="fp_container">`: `Sprite`, `ProgressBar` (3px reading progress, sticky at the top of the viewport; there is deliberately no side navigation), `Intro`, `OilChart`, `FuelsChart`, `PumpStatement`, `MapScrolly`, `TornadoChart`, `CostStatement`, `TankChart`, `GapChart`, `GlobeTrio`, `TagsChart`, `KeyConsiderations`; then `Footer`. All are registered in `src/jsx/App.jsx`.
 
 ## Files (`src/jsx/components/fuelprices/`)
 * `helpers.js` – `useFuelData()` loads the single JSON once; `useWidthRedraw`, `onceVisible`, formatting helpers.
-* `Block.jsx`, `ChartParts.jsx` – shared section wrapper (`.block > .block_inner`, `data-nav` label feeds SlideNav), titles, legends, source/note.
+* `Block.jsx`, `ChartParts.jsx` – shared section wrapper (`.block > .block_inner`), titles, legends, source/note.
 * One file per chart/section: `OilChart`, `FuelsChart`, `MapScrolly` (scrolly steps) with `MapFind` (search and result box) and `FuelMap` (official UN map: Highcharts + map-tools; only economies above the 20% threshold are highlighted; hovering China, Taiwan, Hong Kong or Macao highlights all four, see `setChinaHover`), `TornadoChart` (vulnerable economies), `TankChart` (cost of a tank), `GapChart` (inflation), `GlobeTrio` (regional inflation), `TagsChart` (households), `KeyConsiderations`, `Intro`, `Statement` (`PumpStatement`, `CostStatement`).
 * `Sprite.jsx` + `sprite.svg` – inline SVG symbols; must be in the same document because `url(#fp-hatch-yellow)` and `<use href="#ic-*">` need local ids.
-* `FuelPrices.css` – all section styles (scoped under `#app-root-2026-sohd_fuel_prices .app`). `Header/SlideNav` `.jsx/.css` – adapted from the storyboard. `Footer.jsx` is the designers' text-only quote block (`.block--quote`, navy with the moire overlay shared with the intro) plus the report links (download, more publications; URLs in `meta.json`); its styles live in `FuelPrices.css`. The World of Debt and Trade and Development Report links are inline in the `KeyConsiderations` texts ("fiscal strains of debt-burdened economies", "slow down to 2.6% in 2026"), not in the footer.
+* `FuelPrices.css` – all section styles (scoped under `#app-root-2026-sohd_fuel_prices .app`). `Header` `.jsx/.css` – adapted from the storyboard. `Footer.jsx` is the designers' text-only quote block (`.block--quote`, navy with the moire overlay shared with the intro) plus the report links (download, more publications; URLs in `meta.json`); its styles live in `FuelPrices.css`. The World of Debt and Trade and Development Report links are inline in the `KeyConsiderations` texts ("fiscal strains of debt-burdened economies", "slow down to 2.6% in 2026"), not in the footer.
 * `src/jsx/App.css` – design-token extras only. The moire/gradient page background lives once on `.app` (one viewport-sized `position: fixed` `::before` with lines and wash; no `background-attachment: fixed`, no page-tall layer, both gave artefacts; `.app` has `clip-path: inset(0)` so the fixed layer does not paint over the dev site header) in `FuelPrices.css`; do not repaint it on `.fp_container` (that doubled the lines and made the page noisier than the storyboard).
 * Data: `public/assets/data/2026-sohd_fuel_prices_data.json`. Images: `public/assets/img/2026-sohd_fuel_prices_{main,unctad_logo_white}`.
 
@@ -35,7 +35,7 @@ Read `README.md` first for the overview, status and content workflow; the file m
 
 ## TODO
 * `src/meta.json`: report PDF, publication page and "more reports" URLs are final; the report PDF and publication page are not live yet (unpublished), so they return an error until UNCTAD publishes them.
-* Check copy and data against the final report; check mobile (390px) title area of the header and nav-dot contrast over tinted blocks.
+* Check copy and data against the final report; check mobile (390px) title area of the header.
 
 ## Rules for this project
 * No em dashes in text; use en dashes.
@@ -46,7 +46,7 @@ Read `README.md` first for the overview, status and content workflow; the file m
 * Source lines start with "UN Trade and Development (UNCTAD)".
 * Chart subtitles end with a full stop (the titles do). Axis labels use `--un-color-grey-darkest`; x-axis years are bold. The conflict annotation text comes from `conflictLabel` in `helpers.js`.
 * Map colours (`mapClasses.js`, from the designers' second mockup): five classes, two blues up to 20% then yellow, orange and red above it, hatched stripes for no data; the big number and the fuel word in the step text use the same yellow-to-red gradient (`.maps_big`, `.maps_hl`). `MapFind.jsx` is the "Find an economy" search with a result box (outlines the economy on the map via `foundCode` in `FuelMap.jsx`).
-* Chart slides: the title arrow hangs left of the content. `--fp-indent` (45px, 0 below 600px) is the left margin of `.chart`, `.legend`, `.insight`, `.caption`, `.meta`, `.tank`, `.globes` and `.keys`, so everything lines up with the title text.
+* Chart slides: the title arrow hangs left of the content. `--fp-indent` (1.45 × the title size, so 43.5px at 30px and 34.8px at 24px; 0 below 600px) is the left margin of `.chart`, `.legend`, `.insight`, `.caption`, `.meta`, `.tank`, `.globes` and `.keys`, so everything lines up with the title text.
 
 ## Commands
 ```bash
@@ -74,4 +74,4 @@ npm run lint:fix   # Biome lint + fix
 Run `npm run build` first. `npm run push` pushes to `origin` and `unctad`.
 
 ## Header
-Hero height matches the storyboard (`calc(100svh - 230px)`; `-340px` at max-width 1024px; `100svh` at max-width 800px or max-height 900px) so it fits under the UNCTAD site header. Last word of `meta.json` title goes on line two; "the burden of inflation" in the subtitle is yellow. Nav labels come from `data-nav` on `Block`.
+Hero height matches the storyboard (`calc(100svh - 230px)`; `-340px` at max-width 1024px; `100svh` at max-width 800px or max-height 900px) so it fits under the UNCTAD site header. Last word of `meta.json` title goes on line two; "the burden of inflation" in the subtitle is yellow.

@@ -91,7 +91,7 @@ export default function MapScrolly() {
   );
 
   return (
-    <Block className="block--map-scrolly" id="fp-maps" nav="At the pump">
+    <Block className="block--map-scrolly" id="fp-maps">
       <div className="maps" ref={boxRef}>
         <div className="maps_steps">
           {step('d', 'ic-truck', 'Diesel', true)}

@@ -203,10 +203,10 @@ export default function OilChart() {
   useWidthRedraw(draw, !!payload);
 
   return (
-    <Block id="fp-oil" nav="Oil prices" tinted>
+    <Block id="fp-oil">
       <ChartHeader
         icon="ic-barrel"
-        subtitle="Daily price of crude oil in US dollars per barrel, average of four regional prices."
+        subtitle="Daily price of crude oil in dollars per barrel, average of four regional prices."
         title={
           <>
             Oil prices <Accent>remain high</Accent>, despite recently recovering Middle East exports.

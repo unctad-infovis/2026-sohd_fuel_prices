@@ -56,11 +56,13 @@
 #app-root-2026-sohd_fuel_prices .app {
   --fp-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --fp-font: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --fp-indent: 45px;
+  --fp-arrow-pad: calc(var(--fp-tfs) * 1.45);
+  --fp-indent: var(--fp-arrow-pad);
   --fp-moire:
     repeating-linear-gradient(0deg, var(--fp-stripe) 0 1px, transparent 1px 4px), repeating-linear-gradient(0deg, var(--fp-stripe) 0 1px, transparent 1px 5px), repeating-linear-gradient(28deg, var(--fp-stripe2) 0 1px, transparent 1px 6px), repeating-linear-gradient(28deg, var(--fp-stripe2) 0 1px, transparent 1px 7px);
   --fp-stripe: color-mix(in srgb, var(--un-color-blue-dark) 5%, transparent);
   --fp-stripe2: color-mix(in srgb, var(--un-color-blue-darkest) 4%, transparent);
+  --fp-tfs: var(--un-font-size-xxl);
   --fp-tint: color-mix(in srgb, color-mix(in srgb, var(--un-color-blue-lightest) 50%, #fff) 82%, transparent);
   background-color: #fff;
   /* Clips the fixed background layer (below) to this box, so it never paints over the site header above */
@@ -74,6 +76,9 @@
   overflow-x: clip;
   position: relative;
   /* Content sits under the title text, the arrow hangs to its left; on phones the content uses the full width */
+  @media (max-width: 700px) {
+    --fp-tfs: var(--un-font-size-xl);
+  }
   @media (max-width: 600px) {
     --fp-indent: 0px;
   }
@@ -177,49 +182,53 @@
     margin: 0 auto;
     max-width: 900px;
     padding: 0 20px;
-    @media (max-width: 1100px) {
-      padding-right: 50px;
-    }
     @media (max-width: 600px) {
-      padding-left: 16px;
+      padding: 0 16px;
     }
   }
   .chart_header {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     position: relative;
+    /* Share buttons sit above the title, as in the storyboard */
+    .share_wrapper {
+      margin-bottom: 20px;
+    }
     .chart_header_title {
-      color: #000;
+      color: var(--un-color-blue-darkest);
+      font-size: var(--fp-tfs);
       font-weight: var(--un-font-weight-boldest);
-      margin: 0 0 5px;
-      max-width: 700px;
-      padding: 0 0 0 45px;
+      margin: 0;
+      max-width: 910px;
+      padding: 0 0 0 var(--fp-arrow-pad);
       position: relative;
       text-align: left;
+      /* Arrow 0.95em square, centred on the first line (line-height 1.2), title text starts at 1.45em */
       &::before {
         background-color: var(--un-color-blue);
         content: '';
-        height: 35px;
+        height: 0.95em;
         left: 0;
         mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='70 105 230 215'><path d='M76.3,317.4l107.9-106.4-107-102.2h92.2s117.8,102.3,117.8,102.3l-110,106.4h-100.9v-.1Z'/></svg>") no-repeat center / contain;
         position: absolute;
-        top: 2px;
-        width: 35px;
+        top: 0.6em;
+        transform: translateY(-50%);
+        width: 0.95em;
       }
     }
     .chart_header_accent {
-      color: var(--un-color-blue-text);
+      color: var(--un-color-blue);
     }
     .chart_header_accent--yellow {
       color: var(--un-color-yellow-darkest);
     }
     .chart_header_subtitle {
       color: var(--un-color-grey-darkest);
-      font-size: var(--un-font-size-xs);
+      font-size: var(--un-font-size-xxs);
       font-weight: var(--un-font-weight-normal);
       line-height: var(--un-line-height-normal);
-      margin: 4px 0 0;
+      margin: 14px 0 0;
       max-width: 760px;
-      padding: 0 0 0 45px;
+      padding: 0 0 0 var(--fp-arrow-pad);
       text-align: left;
     }
     .chart_header_subtitle--icon {
@@ -254,8 +263,8 @@
     margin: 20px 0 0 var(--fp-indent);
     max-width: 860px;
     .meta_row {
-      color: var(--un-color-grey-darkest);
-      font-size: var(--un-font-size-xxs);
+      color: var(--un-color-grey-dark);
+      font-size: var(--un-font-size-xxxs);
       font-weight: var(--un-font-weight-light);
       line-height: var(--un-line-height-xl);
       margin: 0 0 5px;
@@ -263,8 +272,8 @@
       padding: 0;
       text-align: left;
       a {
-        border-bottom: 1px dotted var(--un-color-grey-darkest);
-        color: var(--un-color-grey-darkest);
+        border-bottom: 1px dotted var(--un-color-grey-dark);
+        color: var(--un-color-grey-dark);
         text-decoration: none;
         &:hover {
           border-bottom: 0;
@@ -1226,6 +1235,11 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
+    .tags_note {
+      fill: var(--un-color-grey-text);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
     .tags_string {
       stroke: var(--un-color-grey-text);
       stroke-width: 1.6;
@@ -1270,7 +1284,8 @@
       .tags_string {
         stroke-dashoffset: 0;
       }
-      .tags_end {
+      .tags_end,
+      .tags_note {
         opacity: 1;
       }
       .tags_tag {
@@ -1729,7 +1744,8 @@
       }
       .tags_tag,
       .tags_group,
-      .tags_end {
+      .tags_end,
+      .tags_note {
         animation: none;
         opacity: 1;
         transform: none;

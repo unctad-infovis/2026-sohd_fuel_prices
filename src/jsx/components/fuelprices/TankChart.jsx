@@ -134,7 +134,7 @@ export default function TankChart() {
   }, [payload]);
 
   return (
-    <Block className="block--tank" id="fp-tank" nav="Cost of a tank">
+    <Block className="block--tank" id="fp-tank">
       <ChartHeader
         subtitle="Increase in the cost of 40 litres of diesel in per cent of monthly gross domestic product per capita."
         title={

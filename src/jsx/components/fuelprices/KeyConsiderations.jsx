@@ -42,8 +42,8 @@ export default function KeyConsiderations({ tdr_url, world_of_debt_url }) {
   }, []);
 
   return (
-    <Block className="block--keys" id="fp-keys" nav="Key considerations">
-      <ChartHeader title="Key considerations" />
+    <Block className="block--keys" id="fp-keys">
+      <ChartHeader share={false} title="Key considerations" />
       <ol className="keys" ref={ref}>
         {KEYS.map(k => (
           <li className="key" key={k.title}>

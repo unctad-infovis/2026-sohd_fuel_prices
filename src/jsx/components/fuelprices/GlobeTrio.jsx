@@ -262,7 +262,7 @@ export default function GlobeTrio() {
   useWidthRedraw(redraw, !!payload);
 
   return (
-    <Block id="fp-regions" nav="By region">
+    <Block id="fp-regions">
       <ChartHeader
         subtitle="Monthly year-on-year inflation rate in developing countries, median by region."
         title={

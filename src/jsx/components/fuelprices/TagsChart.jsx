@@ -7,6 +7,7 @@ import { onceVisible, tween, useFuelData, useWidthRedraw } from './helpers.js';
 export default function TagsChart() {
   const payload = useFuelData();
   const chartRef = useRef(null);
+  const captionRef = useRef(null);
   const S = useRef({ armed: false, played: false });
 
   const draw = useCallback(() => {
@@ -18,7 +19,7 @@ export default function TagsChart() {
     const narrow = W < 600;
     const k = narrow ? 1.75 : 1;
     const items = [
-      { cls: 'adv', l: ['Advanced', 'economies'], v: p.adv, x: 258 },
+      { cls: 'adv', l: ['Advanced', 'economies'], v: p.adv, x: 290 },
       { cls: 'dev', l: ['Developing', 'countries'], v: p.dev, x: 579 },
       { cls: 'low', l: ['Low-income', 'developing countries'], v: p.lidc, x: 920 }
     ];
@@ -32,7 +33,7 @@ export default function TagsChart() {
       .html('')
       .append('svg')
       .attr('class', 'tags')
-      .attr('viewBox', `80 ${narrow ? 348 : 390} 1040 ${narrow ? 492 : 450}`)
+      .attr('viewBox', `80 ${narrow ? 330 : 372} 1040 ${narrow ? 510 : 468}`)
       .attr('role', 'img')
       .attr('aria-label', `Additional inflation faced by the poorest households: advanced economies ${p.adv} points, developing countries ${p.dev} points, low-income developing countries ${p.lidc} points`);
     for (const [i, it] of items.entries()) {
@@ -45,7 +46,7 @@ export default function TagsChart() {
         .style('transition-delay', `${0.1 + i * 0.12}s`);
       t.append('tspan')
         .attr('x', it.x)
-        .attr('y', RY - 18 - fs * 1.1)
+        .attr('y', RY - 36 - fs * 1.1)
         .text(it.l[0]);
       t.append('tspan')
         .attr('x', it.x)
@@ -55,6 +56,18 @@ export default function TagsChart() {
     svg.append('line').attr('class', 'tags_rail').attr('x1', x0).attr('y1', RY).attr('x2', x1).attr('y2', RY).attr('stroke-dasharray', L).attr('stroke-dashoffset', L).style('transition-delay', '.35s');
     svg.append('circle').attr('class', 'tags_end').attr('cx', x0).attr('cy', RY).attr('r', 9).style('transition-delay', '.4s');
     svg.append('circle').attr('class', 'tags_end').attr('cx', x1).attr('cy', RY).attr('r', 9).style('transition-delay', '1.25s');
+    // The baseline note sits under the start of the rail; on narrower screens it would be too small, so the line above the chart stays instead
+    const noteIn = W >= 760;
+    if (captionRef.current) captionRef.current.hidden = noteIn;
+    if (noteIn) {
+      const note = svg.append('text').attr('class', 'tags_note').attr('font-size', 15).style('transition-delay', '.5s');
+      for (const [j, line] of ['Baseline (0) =', 'inflation faced by', 'the highest-income', 'households'].entries())
+        note
+          .append('tspan')
+          .attr('x', x0 - 8)
+          .attr('y', RY + 27 + j * 18)
+          .text(line);
+    }
     for (const [i, it] of items.entries()) {
       const r = Math.sqrt(it.v);
       const w = 131 * r;
@@ -136,17 +149,19 @@ export default function TagsChart() {
   useWidthRedraw(draw, !!payload);
 
   return (
-    <Block id="fp-households" nav="Households" tinted>
+    <Block id="fp-households" tinted>
       <ChartHeader
         subtitle="Additional inflation faced by poorest compared to richest households per country group, in percentage points."
         title={
           <>
-            Cost-of-living crises hit <Accent>poorer households</Accent> hardest.
+            Cost-of-living crises hit <Accent>poorer households</Accent> hardest, everywhere.
           </>
         }
       />
       <p className="insight">Poorer households face much higher inflation than wealthier households during cost-of-living crises, because they spend more of their income on food and energy.</p>
-      <p className="caption">Baseline (0) = the inflation faced by the highest-income households</p>
+      <p className="caption" ref={captionRef}>
+        Baseline (0) = the inflation faced by the highest-income households
+      </p>
       <figure className="chart" ref={chartRef} />
       <ChartMeta
         note={
