@@ -1021,10 +1021,10 @@
     stroke-width: 5px;
   }
   .gap_line--dev {
-    stroke: var(--un-color-yellow);
+    stroke: var(--un-color-blue);
   }
   .gap_line--dvd {
-    stroke: var(--un-color-blue);
+    stroke: var(--un-color-yellow);
   }
   .gap_before {
     stop-color: var(--un-color-blue-lightest);
@@ -1033,11 +1033,11 @@
     stop-color: color-mix(in srgb, var(--un-color-blue) 38%, #fff);
   }
   .gap_dev {
-    fill: var(--un-color-yellow-darkest);
+    fill: var(--un-color-blue-text-dark);
     font-weight: var(--un-font-weight-bolder);
   }
   .gap_dvd {
-    fill: var(--un-color-blue-text-dark);
+    fill: var(--un-color-yellow-darkest);
     font-weight: var(--un-font-weight-bolder);
   }
   .gap_end_value {

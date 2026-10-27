@@ -114,18 +114,18 @@ export default function GapChart() {
       .style('font-size', fsv)
       .text(`${B[0].toFixed(1)}%`);
     // Open circles mark where the lines start, like the end points
-    svg.append('circle').attr('class', 'point point--yellow').attr('cx', x(T[0])).attr('cy', y(A[0])).attr('r', 5.5).attr('clip-path', 'url(#fp-gap-clip)');
-    svg.append('circle').attr('class', 'point point--blue').attr('cx', x(T[0])).attr('cy', y(B[0])).attr('r', 5.5).attr('clip-path', 'url(#fp-gap-clip)');
+    svg.append('circle').attr('class', 'point point--blue').attr('cx', x(T[0])).attr('cy', y(A[0])).attr('r', 5.5).attr('clip-path', 'url(#fp-gap-clip)');
+    svg.append('circle').attr('class', 'point point--yellow').attr('cx', x(T[0])).attr('cy', y(B[0])).attr('r', 5.5).attr('clip-path', 'url(#fp-gap-clip)');
     // Reading head: two dots that ride on the lines while they draw
     const live = svg.append('g').style('opacity', 0);
-    const ha = live.append('circle').attr('class', 'head_dot head_dot--yellow').attr('r', 5.5);
-    const hb = live.append('circle').attr('class', 'head_dot head_dot--blue').attr('r', 5.5);
+    const ha = live.append('circle').attr('class', 'head_dot head_dot--blue').attr('r', 5.5);
+    const hb = live.append('circle').attr('class', 'head_dot head_dot--yellow').attr('r', 5.5);
     const ya = y(A[n - 1]);
     const yb = y(B[n - 1]);
     const bx = xe + 14;
     const eg = svg.append('g').attr('data-ev', 'e');
-    eg.append('circle').attr('class', 'point point--yellow').attr('cx', xe).attr('cy', ya).attr('r', 5.5);
-    eg.append('circle').attr('class', 'point point--blue').attr('cx', xe).attr('cy', yb).attr('r', 5.5);
+    eg.append('circle').attr('class', 'point point--blue').attr('cx', xe).attr('cy', ya).attr('r', 5.5);
+    eg.append('circle').attr('class', 'point point--yellow').attr('cx', xe).attr('cy', yb).attr('r', 5.5);
     for (const [name, v, yy, cls] of [
       ['Developing', A[n - 1], ya, 'gap_dev'],
       ['Developed', B[n - 1], yb, 'gap_dvd']
@@ -219,11 +219,11 @@ export default function GapChart() {
         subtitle="Monthly year-on-year inflation rate in developed and developing countries, median by country group."
         title={
           <>
-            Inflation is rising, particularly in <Accent yellow>developing countries</Accent>.
+            Inflation is rising, particularly in <Accent>developing countries</Accent>.
           </>
         }
       />
-      <Legend items={[{ label: 'Developing countries', line: 'legend_key--yellow' }, { label: 'Developed countries' }, HATCH_LEGEND]} />
+      <Legend items={[{ label: 'Developing countries' }, { label: 'Developed countries', line: 'legend_key--yellow' }, HATCH_LEGEND]} />
       <figure className="chart" ref={chartRef} />
       <ChartMeta
         note="The depicted data covers 91 developing countries (33 in Africa, 23 in Latin America and the Caribbean, 35 in Asia and Oceania) and 47 developed countries for which inflation data was available for August 2026."
