@@ -229,7 +229,7 @@
       font-weight: var(--un-font-weight-normal);
       line-height: var(--un-line-height-normal);
       margin: 4px 0 0;
-      max-width: min(700px, 92%);
+      max-width: 760px;
       padding: 0 0 0 45px;
       text-align: left;
     }
@@ -328,26 +328,6 @@
       width: 18px;
     }
   }
-  .hz_tip {
-    background: #fff;
-    border: 1px solid var(--un-color-grey-light);
-    border-radius: 3px;
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--un-color-blue-darkest) 14%, transparent);
-    color: var(--un-color-grey-darkest);
-    font-size: var(--un-font-size-xxxs);
-    line-height: var(--un-line-height-normal);
-    opacity: 0;
-    padding: 8px 11px;
-    pointer-events: none;
-    position: absolute;
-    transform: translate(-50%, -110%);
-    transition: opacity 0.15s;
-    white-space: nowrap;
-    z-index: 5;
-    &.is-on {
-      opacity: 1;
-    }
-  }
   .hz_grid line {
     stroke: var(--un-color-grey-light);
     stroke-dasharray: 2 4;
@@ -355,7 +335,7 @@
   }
   .hz_grid text,
   .hz_axis text {
-    fill: var(--un-color-grey-text);
+    fill: var(--un-color-grey-darkest);
     font-size: var(--un-font-size-xxxs);
   }
   .hz_axis .hz_axis_base {
@@ -366,7 +346,7 @@
     stroke: var(--un-color-grey-darkest);
   }
   .hz_axis .hz_axis_year {
-    fill: var(--un-color-grey);
+    font-weight: var(--un-font-weight-bold);
   }
   [data-ev] {
     opacity: 0;
@@ -509,7 +489,12 @@
     stroke-linecap: round;
     stroke-width: 2;
   }
-  .hz_oil_conflict_label {
+  .hz_shade_label {
+    fill: var(--un-color-yellow-darkest);
+    font-size: var(--un-font-size-xxxs);
+    font-weight: var(--un-font-weight-bold);
+  }
+  .hz_conflict_label {
     fill: var(--un-color-red-text-dark);
     font-size: var(--un-font-size-xxxs);
     font-weight: var(--un-font-weight-bold);
@@ -591,11 +576,6 @@
       stroke-linejoin: round;
       stroke-width: 2.5px;
     }
-    .hz_mini_shade_label {
-      fill: var(--un-color-yellow-darkest);
-      font-size: var(--un-font-size-xxxs);
-      font-weight: var(--un-font-weight-bold);
-    }
   }
   .hz_statement {
     color: #000;
@@ -643,32 +623,8 @@
       height: 14px;
       width: 14px;
     }
-  }
-  .hz_map {
-    .hz_map_country {
-      stroke: #fff;
-      stroke-width: 0.5;
-      transition: fill 0.9s var(--hz-ease);
-      &.is-hl {
-        stroke: var(--un-color-grey-darkest);
-        stroke-width: 1.6;
-      }
-    }
-    .hz_map_border {
-      fill: none;
-      pointer-events: none;
-      stroke: #fff;
-      stroke-linecap: round;
-      stroke-width: 0.6;
-    }
-    .hz_map_border--dashed {
-      stroke-dasharray: 3 2;
-    }
-    .hz_map_border--dotted {
-      stroke-dasharray: 0.6 1.8;
-    }
-    .hz_map_border--dashdot {
-      stroke-dasharray: 3 1.6 0.6 1.6;
+    .hz_classes_key--none {
+      background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--un-color-grey) 15%, var(--un-color-grey-light)) 0 1px, #fff 1px 4px);
     }
   }
   .hz_block--map-scrolly {
@@ -737,8 +693,6 @@
       }
     }
     .hz_maps_card {
-      --hz-acc: var(--un-color-blue);
-      --hz-acc-text: var(--un-color-blue-text-dark);
       filter: grayscale(1);
       max-width: 26em;
       opacity: 0.3;
@@ -748,10 +702,6 @@
         opacity 0.6s var(--hz-ease),
         transform 0.8s var(--hz-ease);
     }
-    .hz_maps_step[data-mode='g'] .hz_maps_card {
-      --hz-acc: var(--un-color-yellow);
-      --hz-acc-text: var(--un-color-yellow-darkest);
-    }
     .hz_maps_step.is-on .hz_maps_card {
       filter: none;
       opacity: 1;
@@ -759,7 +709,7 @@
     }
     .hz_maps_fuel {
       align-items: center;
-      color: var(--hz-acc-text);
+      color: var(--un-color-grey-darkest);
       display: flex;
       font-size: var(--un-font-size-xxs);
       font-weight: var(--un-font-weight-bolder);
@@ -768,14 +718,14 @@
       margin-bottom: 6px;
       text-transform: uppercase;
       svg {
-        color: var(--hz-acc);
+        color: var(--un-color-grey-darkest);
         height: 30px;
         width: 30px;
       }
     }
     .hz_maps_big {
       align-items: baseline;
-      color: var(--hz-acc-text);
+      color: var(--un-color-red-text);
       display: flex;
       flex-wrap: wrap;
       gap: 0 10px;
@@ -792,10 +742,6 @@
       font-size: clamp(var(--un-font-size-xl), 2.2vw, var(--un-font-size-xxl));
       font-weight: var(--un-font-weight-boldest);
       letter-spacing: -0.02em;
-    }
-    .hz_maps_step[data-mode='d'] .hz_maps_count,
-    .hz_maps_step[data-mode='d'] .hz_maps_unit {
-      color: var(--un-color-blue);
     }
     .hz_maps_title {
       color: #000;
@@ -825,24 +771,7 @@
       justify-content: center;
     }
     .hz_maps_caption_fuel {
-      color: var(--un-color-blue);
-    }
-    &[data-fuel='g'] .hz_maps_caption_fuel {
-      color: var(--un-color-yellow-darkest);
-    }
-    .hz_map_country {
-      transition:
-        fill 0.9s var(--hz-ease),
-        fill-opacity 0.7s var(--hz-ease);
-    }
-    &.is-focus .hz_map_country.is-low {
-      fill-opacity: 0.3;
-    }
-    .hz_classes_item {
-      transition: opacity 0.7s var(--hz-ease);
-    }
-    &.is-focus .hz_classes_item.is-low {
-      opacity: 0.4;
+      color: var(--un-color-red-text);
     }
     .hz_maps_chart {
       margin-left: 0;
@@ -862,14 +791,15 @@
       margin-bottom: 10px;
     }
     .hz_tornado_fuel {
+      --hz-icon: 40px;
       align-items: center;
       display: flex;
       font-size: var(--un-font-size-xs);
       font-weight: var(--un-font-weight-bolder);
       gap: 10px;
       svg {
-        height: 40px;
-        width: 40px;
+        height: var(--hz-icon);
+        width: var(--hz-icon);
       }
     }
     .hz_tornado_fuel--d {
@@ -877,12 +807,14 @@
       justify-content: flex-end;
       svg {
         color: var(--un-color-blue);
+        translate: 0 calc(var(--hz-icon) * -0.055);
       }
     }
     .hz_tornado_fuel--g {
       color: var(--un-color-yellow-darkest);
       svg {
         color: var(--un-color-yellow);
+        translate: 0 calc(var(--hz-icon) * -0.085);
       }
     }
     .hz_tornado_row {
@@ -951,18 +883,20 @@
     }
     .hz_tornado_cell--d .hz_tornado_value {
       color: #fff;
-      right: 10px;
+      left: calc((1 - var(--hz-s)) * 100% + 10px);
     }
     .hz_tornado_cell--g .hz_tornado_value {
       color: var(--un-color-grey-darkest);
-      left: 10px;
+      right: calc((1 - var(--hz-s)) * 100% + 10px);
     }
     .hz_tornado_cell--d.is-out .hz_tornado_value {
       color: var(--un-color-blue-text-dark);
+      left: auto;
       right: calc(var(--hz-s) * 100% + 8px);
     }
     .hz_tornado_cell--g.is-out .hz_tornado_value {
       left: calc(var(--hz-s) * 100% + 8px);
+      right: auto;
     }
     @media (max-width: 600px) {
       --hz-mid: 104px;
@@ -983,12 +917,9 @@
         font-size: var(--un-font-size-xxxs);
       }
       .hz_tornado_fuel {
+        --hz-icon: 28px;
         font-size: var(--un-font-size-xxxs);
         gap: 6px;
-        svg {
-          height: 28px;
-          width: 28px;
-        }
       }
     }
   }
@@ -1010,10 +941,6 @@
     }
     .hz_tank_ground {
       fill: var(--un-color-grey-light);
-    }
-    .hz_tank_pump_label {
-      fill: var(--un-color-blue-darkest);
-      font-weight: var(--un-font-weight-bolder);
     }
     .hz_tank_display_box {
       fill: var(--un-color-yellow);
@@ -1063,6 +990,7 @@
       color: var(--un-color-grey-darkest);
       font-size: var(--un-font-size-xxs);
       font-weight: var(--un-font-weight-bold);
+      text-align: right;
     }
     .hz_income_n {
       color: var(--un-color-grey-text);
@@ -1123,10 +1051,10 @@
     stroke-width: 5px;
   }
   .hz_gap_line--dev {
-    stroke: var(--un-color-blue);
+    stroke: var(--un-color-yellow);
   }
   .hz_gap_line--dvd {
-    stroke: var(--un-color-yellow);
+    stroke: var(--un-color-blue);
   }
   .hz_gap_before {
     stop-color: var(--un-color-blue-lightest);
@@ -1135,22 +1063,17 @@
     stop-color: color-mix(in srgb, var(--un-color-blue) 38%, #fff);
   }
   .hz_gap_dev {
-    fill: var(--un-color-blue-text-dark);
+    fill: var(--un-color-yellow-darkest);
     font-weight: var(--un-font-weight-bolder);
   }
   .hz_gap_dvd {
-    fill: var(--un-color-yellow-darkest);
+    fill: var(--un-color-blue-text-dark);
     font-weight: var(--un-font-weight-bolder);
   }
   .hz_gap_end_value {
     font-variant-numeric: tabular-nums;
     font-weight: var(--un-font-weight-boldest);
     letter-spacing: -0.03em;
-  }
-  .hz_gap_conflict_label {
-    fill: var(--un-color-red-text-dark);
-    font-size: var(--un-font-size-xxxs);
-    font-weight: var(--un-font-weight-bold);
   }
   .hz_head_dot {
     stroke: #fff;
@@ -1252,6 +1175,10 @@
       fill: var(--hz-text);
       font-size: var(--un-font-size-xxxs);
       font-weight: var(--un-font-weight-bolder);
+      text-shadow:
+        0 0 3px #fff,
+        0 0 3px #fff,
+        0 0 2px #fff;
     }
     .hz_globe_late {
       opacity: 0;
@@ -1290,6 +1217,10 @@
         opacity 0.6s ease,
         transform 0.7s var(--hz-ease);
     }
+    .hz_tags_group--adv {
+      fill: var(--un-color-blue-text-dark);
+    }
+    .hz_tags_group--dev,
     .hz_tags_group--low {
       fill: var(--un-color-yellow-darkest);
     }
@@ -1317,11 +1248,11 @@
       fill: color-mix(in srgb, var(--un-color-blue-lightest) 45%, #fff);
     }
     .hz_tags_tag--adv {
-      --hz-tag: var(--un-color-blue-light);
-      --hz-tag-text: var(--un-color-grey-darkest);
+      --hz-tag: var(--un-color-blue);
+      --hz-tag-text: #fff;
     }
     .hz_tags_tag--dev {
-      --hz-tag: var(--un-color-blue);
+      --hz-tag: var(--un-color-yellow-darkest);
       --hz-tag-text: #fff;
     }
     .hz_tags_tag--low {

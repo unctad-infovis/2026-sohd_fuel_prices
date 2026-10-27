@@ -41,11 +41,11 @@ export default function FuelsChart() {
         d.append('figure').attr('class', 'hz_mini_chart');
         return d;
       });
-    minis.each(function (u) {
+    minis.each(function (u, i) {
       const el = d3.select(this).select('.hz_mini_chart').node();
       const W = el.clientWidth || 200;
-      const H = Math.max(200, Math.min(260, Math.round(W * 0.95)));
-      const m = { b: 30, l: 6, r: 8, t: 14 };
+      const H = Math.max(200, Math.min(260, Math.round(W * 0.95))) + 16; // Room for the two-line x-axis labels
+      const m = { b: 46, l: 30, r: 8, t: 14 }; // Left margin keeps the line clear of the y-axis labels
       const x = d3.scaleUtc([T[0], T[n - 1]], [m.l, W - m.r]);
       const y = d3.scaleLinear([0, 290], [H - m.b, m.t]);
       const svg = svgFor(el, W, H, `${u.name} price index, +${u.pct}% since the start of the Middle East conflict`);
@@ -66,12 +66,15 @@ export default function FuelsChart() {
         .attr('width', x(T[n - 1]) - x(CONFLICT))
         .attr('height', H - m.t - m.b)
         .style('fill', 'url(#hz-hatch-yellow)');
-      const sl = svg.append('text').attr('class', 'hz_mini_shade_label').attr('text-anchor', 'middle');
-      for (const [j, l] of ['Middle East', 'conflict'].entries())
-        sl.append('tspan')
-          .attr('x', (x(CONFLICT) + x(T[n - 1])) / 2)
-          .attr('y', H - m.b - 22 + j * 14)
-          .text(l);
+      // The conflict label is only needed on the first chart
+      if (i === 0) {
+        const sl = svg.append('text').attr('class', 'hz_shade_label').attr('text-anchor', 'middle');
+        for (const [j, l] of ['Middle East', 'conflict'].entries())
+          sl.append('tspan')
+            .attr('x', (x(CONFLICT) + x(T[n - 1])) / 2)
+            .attr('y', H - m.b - 22 + j * 14)
+            .text(l);
+      }
       const grid = svg.append('g').attr('class', 'hz_grid');
       for (const v of [100, 200]) {
         grid
@@ -93,11 +96,7 @@ export default function FuelsChart() {
         .attr('x2', W - m.r)
         .attr('y1', y(0))
         .attr('y2', y(0));
-      for (const [yr, l] of [
-        [2024, 'Sep 24'],
-        [2025, 'Sep 25'],
-        [2026, 'Sep 26']
-      ]) {
+      for (const yr of [2024, 2025, 2026]) {
         const xx = x(Date.UTC(yr, 8, 1));
         if (xx < m.l - 1 || xx > W - m.r + 1) continue;
         ax.append('line')
@@ -110,7 +109,13 @@ export default function FuelsChart() {
           .attr('x', xx)
           .attr('y', y(0) + 20)
           .attr('text-anchor', 'middle')
-          .text(l);
+          .text('Sep');
+        ax.append('text')
+          .attr('class', 'hz_axis_year')
+          .attr('x', xx)
+          .attr('y', y(0) + 36)
+          .attr('text-anchor', 'middle')
+          .text(yr);
       }
       svg
         .append('path')
@@ -163,7 +168,7 @@ export default function FuelsChart() {
   return (
     <Block id="hz-fuels" nav="Fuels">
       <ChartHeader
-        subtitle="Index: average for the period 1 Sep 2025 – 27 Feb 2026 = 100"
+        subtitle="Index: average for the period 1 Sep 2025 – 27 Feb 2026 = 100."
         title={
           <>
             Fuels propelling global production and trade have gotten <Accent>more expensive</Accent>.

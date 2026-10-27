@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { useCallback, useEffect, useRef } from 'react';
 import Block from './Block.jsx';
 import { Accent, ChartHeader, ChartMeta, HATCH_LEGEND, Legend } from './ChartParts.jsx';
-import { easeInOut, onceVisible, svgFor, tween, useFuelData, useWidthRedraw } from './helpers.js';
+import { CONFLICT_LABEL, conflictLabel, easeInOut, onceVisible, svgFor, tween, useFuelData, useWidthRedraw } from './helpers.js';
 
 export default function GapChart() {
   const payload = useFuelData();
@@ -106,18 +106,7 @@ export default function GapChart() {
       .attr('y', y(0) - 28)
       .attr('width', 38)
       .attr('height', 28);
-    const ct = cg
-      .append('text')
-      .attr('class', 'hz_gap_conflict_label')
-      .attr('text-anchor', 'end')
-      .attr('y', m.t - 18);
-    ct.append('tspan')
-      .attr('x', cx - 8)
-      .text('Start of the Middle East');
-    ct.append('tspan')
-      .attr('x', cx - 8)
-      .attr('dy', 15)
-      .text('conflict (28 Feb 2026)');
+    conflictLabel(cg, CONFLICT_LABEL, cx - 8, m.t - 18);
     const line = arr =>
       d3
         .line()
@@ -141,7 +130,7 @@ export default function GapChart() {
     svg
       .append('text')
       .attr('class', 'hz_gap_dev')
-      .attr('x', x(T[0]) - 8)
+      .attr('x', x(T[0]) - 14)
       .attr('y', y(A[0]) - 6)
       .attr('text-anchor', 'end')
       .style('font-size', fsv)
@@ -149,21 +138,24 @@ export default function GapChart() {
     svg
       .append('text')
       .attr('class', 'hz_gap_dvd')
-      .attr('x', x(T[0]) - 8)
+      .attr('x', x(T[0]) - 14)
       .attr('y', y(B[0]) + 16)
       .attr('text-anchor', 'end')
       .style('font-size', fsv)
       .text(`${B[0].toFixed(1)}%`);
+    // Open circles mark where the lines start, like the end points
+    svg.append('circle').attr('class', 'hz_point hz_point--yellow').attr('cx', x(T[0])).attr('cy', y(A[0])).attr('r', 5.5).attr('clip-path', 'url(#hz-gap-clip)');
+    svg.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', x(T[0])).attr('cy', y(B[0])).attr('r', 5.5).attr('clip-path', 'url(#hz-gap-clip)');
     // Reading head: two dots that ride on the lines while they draw
     const live = svg.append('g').style('opacity', 0);
-    const ha = live.append('circle').attr('class', 'hz_head_dot hz_head_dot--blue').attr('r', 5.5);
-    const hb = live.append('circle').attr('class', 'hz_head_dot hz_head_dot--yellow').attr('r', 5.5);
+    const ha = live.append('circle').attr('class', 'hz_head_dot hz_head_dot--yellow').attr('r', 5.5);
+    const hb = live.append('circle').attr('class', 'hz_head_dot hz_head_dot--blue').attr('r', 5.5);
     const ya = y(A[n - 1]);
     const yb = y(B[n - 1]);
     const bx = xe + 14;
     const eg = svg.append('g').attr('data-ev', 'e');
-    eg.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', xe).attr('cy', ya).attr('r', 5.5);
-    eg.append('circle').attr('class', 'hz_point hz_point--yellow').attr('cx', xe).attr('cy', yb).attr('r', 5.5);
+    eg.append('circle').attr('class', 'hz_point hz_point--yellow').attr('cx', xe).attr('cy', ya).attr('r', 5.5);
+    eg.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', xe).attr('cy', yb).attr('r', 5.5);
     for (const [name, v, yy, cls] of [
       ['Developing', A[n - 1], ya, 'hz_gap_dev'],
       ['Developed', B[n - 1], yb, 'hz_gap_dvd']
@@ -254,14 +246,14 @@ export default function GapChart() {
   return (
     <Block id="hz-inflation" nav="Inflation" tinted>
       <ChartHeader
-        subtitle="Monthly year-on-year inflation rate in developed and developing countries, median by country group"
+        subtitle="Monthly year-on-year inflation rate in developed and developing countries, median by country group."
         title={
           <>
-            Inflation is rising, particularly in <Accent>developing countries</Accent>.
+            Inflation is rising, particularly in <Accent yellow>developing countries</Accent>.
           </>
         }
       />
-      <Legend items={[{ label: 'Developing countries', line: 'hz_legend_key--line' }, { label: 'Developed countries', line: 'hz_legend_key--line hz_legend_key--yellow' }, HATCH_LEGEND]} />
+      <Legend items={[{ label: 'Developing countries', line: 'hz_legend_key--yellow' }, { label: 'Developed countries' }, HATCH_LEGEND]} />
       <figure className="hz_chart" ref={chartRef} />
       <ChartMeta
         note="The depicted data covers 91 developing countries (33 in Africa, 23 in Latin America and the Caribbean, 35 in Asia and Oceania) and 47 developed countries for which inflation data was available for August 2026."

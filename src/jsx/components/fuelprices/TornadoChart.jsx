@@ -55,7 +55,7 @@ export default function TornadoChart() {
   return (
     <Block id="hz-ldc" nav="Vulnerable economies" tinted>
       <ChartHeader
-        subtitle="Increase of local retail prices of diesel and gasoline for least developed countries, in per cent"
+        subtitle="Increase of local retail prices of diesel and gasoline for least developed countries, in per cent."
         title={
           <>
             Some of the highest fuel price increases hit <Accent>vulnerable economies</Accent>.

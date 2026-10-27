@@ -11,6 +11,8 @@ export const fmtInt = v => Math.round(v).toLocaleString('en-US').replace(/,/g, '
 export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 export const color = name => `var(--un-color-${name})`;
 export const isStill = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** Resolved value of a --un-color-* design token (Highcharts needs real colour strings, not var()). */
+export const tokenColor = name => getComputedStyle(document.documentElement).getPropertyValue(`--un-color-${name}`).trim();
 export const tokPx = name => Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue(`--un-font-size-${name}`)) || 14;
 
 /** Run fn once, the first time el is on screen enough. fn receives true when animation should be skipped. */
@@ -54,16 +56,44 @@ export function tween(dur, step, done, delay = 0) {
   return timer;
 }
 
+export const CONFLICT_LABEL = ['Start of the Middle East', 'conflict, 28 Feb 2026'];
+export const CONFLICT_LABEL_NARROW = ['Start of the', 'Middle East conflict,', '28 Feb 2026'];
+
+/** Conflict annotation shared by the line charts: right-aligned text to the left of the conflict line, one tspan per line. */
+export function conflictLabel(parent, lines, x, y) {
+  const text = parent.append('text').attr('class', 'hz_conflict_label').attr('text-anchor', 'end').attr('y', y);
+  for (const [j, l] of lines.entries())
+    text
+      .append('tspan')
+      .attr('x', x)
+      .attr('dy', j ? 16 : 0)
+      .text(l);
+  return text;
+}
+
 export function svgFor(el, W, H, label) {
   return d3.select(el).html('').append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('width', W).attr('height', H).attr('role', 'img').attr('aria-label', label);
 }
 
-export function tipFor(el) {
-  return d3.select(el).append('div').attr('class', 'hz_tip');
+let dataPromise = null;
+let topologyPromise = null;
+/** Official UN world map topology (shared by all UNCTAD map projects), loaded once. */
+export function useTopology() {
+  const [topology, setTopology] = useState(null);
+  useEffect(() => {
+    topologyPromise = topologyPromise || loadFile('assets/data/worldmap-economies-54030.topo.json').then(r => r?.json());
+    let alive = true;
+    topologyPromise.then(t => {
+      if (alive && t) setTopology(t);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return topology;
 }
 
-let dataPromise = null;
-/** Shared datasets, loaded once: { data, map, globe, ill }. */
+/** Shared datasets, loaded once: { data, globe, ill }. */
 export function useFuelData() {
   const [payload, setPayload] = useState(null);
   useEffect(() => {

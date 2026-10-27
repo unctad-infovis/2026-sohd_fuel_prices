@@ -32,20 +32,20 @@ export default function TagsChart() {
       .html('')
       .append('svg')
       .attr('class', 'hz_tags')
-      .attr('viewBox', `80 ${narrow ? 330 : 372} 1040 ${narrow ? 510 : 468}`)
+      .attr('viewBox', `80 ${narrow ? 348 : 390} 1040 ${narrow ? 492 : 450}`)
       .attr('role', 'img')
       .attr('aria-label', `Additional inflation faced by the poorest households: advanced economies ${p.adv} points, developing countries ${p.dev} points, low-income developing countries ${p.lidc} points`);
     for (const [i, it] of items.entries()) {
       const fs = 22 * k;
       const t = svg
         .append('text')
-        .attr('class', `hz_tags_group${it.cls === 'low' ? ' hz_tags_group--low' : ''}`)
+        .attr('class', `hz_tags_group hz_tags_group--${it.cls}`)
         .attr('text-anchor', 'middle')
         .attr('font-size', fs)
         .style('transition-delay', `${0.1 + i * 0.12}s`);
       t.append('tspan')
         .attr('x', it.x)
-        .attr('y', RY - 36 - fs * 1.1)
+        .attr('y', RY - 18 - fs * 1.1)
         .text(it.l[0]);
       t.append('tspan')
         .attr('x', it.x)
@@ -138,10 +138,10 @@ export default function TagsChart() {
   return (
     <Block id="hz-households" nav="Households" tinted>
       <ChartHeader
-        subtitle="Additional inflation faced by poorest compared to richest households per country group, in percentage points"
+        subtitle="Additional inflation faced by poorest compared to richest households per country group, in percentage points."
         title={
           <>
-            Cost-of-living crises hit <Accent>poorer households</Accent> hardest.
+            Cost-of-living crises hit <Accent yellow>poorer households</Accent> hardest.
           </>
         }
       />

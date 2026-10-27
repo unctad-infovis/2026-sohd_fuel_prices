@@ -28,12 +28,10 @@ export default function TankChart() {
     const parked = `M${ox} ${oy} C${ox + 40} ${oy + 46} ${hk + 46} ${G - 23} ${hk} ${hy}`;
     const active = `M${ox} ${oy} C${ox + 55} ${oy + 20} ${fx - 95} ${G + 6} ${fx} ${fy}`;
     // ILL holds the car and pump drawings as SVG markup
-    scene.innerHTML = `<svg viewBox="0 0 760 360" role="img" aria-label="A car drives to a fuel pump; filling 40 litres of diesel now costs an extra 10% of a month's income in low-income countries">
+    scene.innerHTML = `<svg viewBox="0 0 760 360" role="img" aria-label="A car drives to a fuel pump; filling 40 litres of fuel now costs an extra 10% of a month's income in low-income countries">
     <rect class="hz_tank_ground" x="0" y="${G}" width="760" height="7"/>
     <g transform="translate(${PX},${G}) scale(${PK})">${ILL.pump}
-      <text class="hz_tank_pump_label" x="-7" y="-174" text-anchor="middle" style="font-size:6.4px;letter-spacing:.3px">LOW-INCOME</text><text class="hz_tank_pump_label" x="-7" y="-166.5" text-anchor="middle" style="font-size:6.4px;letter-spacing:.3px">COUNTRIES</text>
-      <rect class="hz_tank_display_box" x="-34" y="-161" width="54" height="30" rx="2"/><text class="hz_tank_display" data-role="display" x="-7" y="-139" text-anchor="middle" style="font-size:20px">+0%</text>
-      <text class="hz_tank_pump_label" x="-7" y="-117" text-anchor="middle" style="font-size:7.4px">of monthly</text><text class="hz_tank_pump_label" x="-7" y="-108.5" text-anchor="middle" style="font-size:7.4px">income</text></g>
+      <rect class="hz_tank_display_box" x="-34" y="-161" width="54" height="30" rx="2"/><text class="hz_tank_display" data-role="display" x="-7" y="-139" text-anchor="middle" style="font-size:20px">+0%</text></g>
     <path class="hz_tank_hose" data-role="hose-parked" d="${parked}"/>
     <path class="hz_tank_hose" data-role="hose-active" d="${active}" opacity="0"/>
     <path class="hz_tank_flow" data-role="flow" d="${active}"/>
@@ -138,7 +136,7 @@ export default function TankChart() {
   return (
     <Block className="hz_block--tank" id="hz-tank" nav="Cost of a tank">
       <ChartHeader
-        subtitle="Increase in the cost of 40 litres of diesel in per cent of monthly gross domestic product per capita"
+        subtitle="Increase in the cost of 40 litres of fuel in per cent of monthly gross domestic product per capita."
         title={
           <>
             Filling a car tank now takes <Accent>an extra 10% of people’s income</Accent> in poor countries.

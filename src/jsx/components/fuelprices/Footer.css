@@ -67,6 +67,7 @@
           }
           .footer_quote {
             border: 0;
+            color: #000;
             font-size: var(--un-font-size-xl);
             font-style: italic;
             font-weight: var(--un-font-weight-normal);
@@ -79,12 +80,12 @@
             flex-direction: column;
             gap: 4px;
             .footer_name {
-              color: var(--un-color-blue-text);
+              color: #000;
               font-size: var(--un-font-size-normal);
               font-weight: var(--un-font-weight-bold);
             }
             .footer_role {
-              color: var(--un-color-grey-text);
+              color: var(--un-color-grey-darkest);
               font-size: var(--un-font-size-xxxs);
               font-weight: var(--un-font-weight-light);
               letter-spacing: 0.1em;
@@ -126,7 +127,7 @@
         .footer_more_link {
           align-items: center;
           border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-          color: var(--un-color-grey-dark);
+          color: var(--un-color-grey-darkest);
           display: inline-flex;
           font-size: var(--un-font-size-xxs);
           font-weight: var(--un-font-weight-semibold);

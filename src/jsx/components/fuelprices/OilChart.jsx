@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
 import { useCallback, useEffect, useRef } from 'react';
 import Block from './Block.jsx';
-import { Accent, ChartHeader, ChartMeta, Legend } from './ChartParts.jsx';
-import { CONFLICT, easeInOut, onceVisible, svgFor, tokPx, tween, useFuelData, useWidthRedraw } from './helpers.js';
+import { Accent, ChartHeader, ChartMeta } from './ChartParts.jsx';
+import { CONFLICT, CONFLICT_LABEL, CONFLICT_LABEL_NARROW, conflictLabel, easeInOut, onceVisible, svgFor, tokPx, tween, useFuelData, useWidthRedraw } from './helpers.js';
 
 export default function OilChart() {
   const payload = useFuelData();
@@ -18,8 +18,8 @@ export default function OilChart() {
     const n = T.length;
     const W = el.clientWidth || 800;
     const narrow = W < 600;
-    const H = Math.max(250, Math.min(370, Math.round(W * 0.36)));
-    const m = { b: 46, l: 40, r: 86, t: 30 };
+    const H = Math.max(250, Math.min(370, Math.round(W * 0.36))) + (narrow ? 34 : 0);
+    const m = { b: 46, l: 40, r: 86, t: narrow ? 64 : 30 }; // Narrow: headroom for the three-line conflict label above the plot
     const x = d3.scaleUtc([T[0], T[n - 1]], [m.l, W - m.r]);
     const y = d3.scaleLinear([0, Math.ceil(d3.max(o.a) / 10) * 10 + 4], [H - m.b, m.t]);
     const mou0 = Date.UTC(2026, 5, 15);
@@ -87,18 +87,15 @@ export default function OilChart() {
           .text(a[3]);
     }
     const cx = x(CONFLICT);
-    svg.append('line').attr('class', 'hz_oil_conflict').attr('data-ev', 'conflict').attr('x1', cx).attr('x2', cx).attr('y1', m.t).attr('y2', y(0));
-    const cl = svg
-      .append('text')
-      .attr('class', 'hz_oil_conflict_label')
+    svg
+      .append('line')
+      .attr('class', 'hz_oil_conflict')
       .attr('data-ev', 'conflict')
-      .attr('text-anchor', 'end')
-      .attr('y', m.t + 12);
-    for (const [j, l] of (narrow ? ['Conflict', 'begins'] : ['Start of the', 'Middle East conflict']).entries())
-      cl.append('tspan')
-        .attr('x', cx - 8)
-        .attr('dy', j ? 16 : 0)
-        .text(l);
+      .attr('x1', cx)
+      .attr('x2', cx)
+      .attr('y1', narrow ? m.t - 50 : m.t)
+      .attr('y2', y(0));
+    conflictLabel(svg, narrow ? CONFLICT_LABEL_NARROW : CONFLICT_LABEL, cx - 8, narrow ? m.t - 38 : m.t + 12).attr('data-ev', 'conflict');
     svg
       .append('use')
       .attr('data-ev', 'burst')
@@ -163,13 +160,21 @@ export default function OilChart() {
       .attr('x', x(T[n - 1]) + 12)
       .attr('y', y(o.a[n - 1]) + 6)
       .text(Math.round(o.a[n - 1]));
+    // Highest price: labelled like the first and the latest one, revealed when the line passes it
+    const kMax = d3.maxIndex(o.a);
+    const xPeak = x(T[kMax]);
+    const pg = svg.append('g').attr('data-ev', 'peak');
+    pg.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', xPeak).attr('cy', y(o.a[kMax])).attr('r', 5);
+    pg.append('text')
+      .attr('class', 'hz_value hz_value--blue')
+      .attr('x', xPeak)
+      .attr('y', y(o.a[kMax]) - 14)
+      .attr('text-anchor', 'middle')
+      .text(Math.round(o.a[kMax]));
     const head = svg.append('circle').attr('class', 'hz_oil_head').attr('r', 5.5).attr('cx', -20).attr('cy', -20);
-    // Sequence: conflict, March peak, MoU, today
-    let kPeak = T.findIndex(t => t >= CONFLICT);
-    for (let k = kPeak; k < n && T[k] <= Date.UTC(2026, 3, 15); k++) if (o.a[k] > o.a[kPeak]) kPeak = k;
+    // Sequence: conflict, MoU, today (the line passes the highest price without stopping)
     const stops = [
       { dur: 1100, evs: ['burst', 'conflict'], pause: 1100, x: CONFLICT },
-      { dur: 1500, evs: [], pause: 350, x: T[kPeak] },
       { evs: ['mou'], pause: 1300, x: mou0 },
       { evs: ['end'], pause: 0, x: T[n - 1] }
     ];
@@ -177,7 +182,7 @@ export default function OilChart() {
     const finish = () => {
       clip.attr('width', W);
       head.style('display', 'none');
-      for (const ev of ['start'].concat(...stops.map(s => s.evs))) show(ev);
+      for (const ev of ['start', 'peak'].concat(...stops.map(s => s.evs))) show(ev);
     };
     if (OIL.played || OIL.running) {
       finish();
@@ -201,6 +206,7 @@ export default function OilChart() {
       let xp = x(T[0]);
       const speed = (x(T[n - 1]) - xp) / 4800;
       let i = 0;
+      let peakShown = false;
       const seg = () => {
         if (i >= stops.length) {
           OIL.played = true;
@@ -217,6 +223,10 @@ export default function OilChart() {
           t => {
             const e = easeInOut(t);
             xp = xa + (xb - xa) * e;
+            if (!peakShown && xp >= xPeak) {
+              peakShown = true;
+              show('peak');
+            }
             clip.attr('width', xp + 3);
             head.attr('cx', xp).attr('cy', y(valAt(xp)));
           },
@@ -244,14 +254,13 @@ export default function OilChart() {
     <Block id="hz-oil" nav="Oil prices" tinted>
       <ChartHeader
         icon="ic-barrel"
-        subtitle="Daily price of crude oil in US dollars per barrel"
+        subtitle="Daily price of crude oil in US dollars per barrel, average of four regional prices."
         title={
           <>
             Oil prices <Accent>remain high</Accent>, despite recently recovering Middle East exports.
           </>
         }
       />
-      <Legend items={[{ label: 'Average of four regional prices', line: 'hz_legend_key--line' }]} />
       <figure className="hz_chart" ref={chartRef} />
       <ChartMeta
         note="Prices between 1 September 2025 and 19 October 2026. Average based on Brent (Europe), WTI (Northern America), Dubai (Middle East), Urals (Russian Federation). All four regional prices surpassed US$ 100 on 10 September 2026. Islamabad MoU: Islamabad Memorandum of Understanding."

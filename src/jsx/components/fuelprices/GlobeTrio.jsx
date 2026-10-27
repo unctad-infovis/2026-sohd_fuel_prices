@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 import Block from './Block.jsx';
-import { Accent, ChartHeader, ChartMeta, HATCH_LEGEND, Legend } from './ChartParts.jsx';
+import { Accent, ChartHeader, ChartMeta } from './ChartParts.jsx';
 import { onceVisible, svgFor, tween, useFuelData } from './helpers.js';
 
 const REGIONS = [
@@ -59,6 +59,15 @@ function regionChart(col, r, animate, f) {
     .attr('width', x(T[n - 1]) - x(s0))
     .attr('height', H - m.t - m.b)
     .style('fill', 'url(#hz-hatch-yellow)');
+  // The conflict label is only needed on the first chart
+  if (r.k === REGIONS[0].k) {
+    const sl = svg.append('text').attr('class', 'hz_shade_label').attr('text-anchor', 'middle');
+    for (const [j, l] of ['Middle East', 'conflict'].entries())
+      sl.append('tspan')
+        .attr('x', (x(s0) + x(T[n - 1])) / 2)
+        .attr('y', H - m.b - 22 + j * 14)
+        .text(l);
+  }
   const grid = svg.append('g').attr('class', 'hz_grid');
   for (const t of [2, 4, 6]) {
     grid
@@ -269,14 +278,13 @@ export default function GlobeTrio() {
   return (
     <Block id="hz-regions" nav="By region">
       <ChartHeader
-        subtitle="Monthly year-on-year inflation rate in developing countries, median by region"
+        subtitle="Monthly year-on-year inflation rate in developing countries, median by region."
         title={
           <>
             The surge in inflation is particularly steep in <Accent yellow>developing Asia and Oceania</Accent>.
           </>
         }
       />
-      <Legend items={[HATCH_LEGEND]} />
       <div className="hz_globes hz_globes--charts" ref={ref} />
       <ChartMeta note="The depicted data covers 91 developing countries (33 in Africa, 23 in Latin America and the Caribbean, 35 in Asia and Oceania) for which inflation data was available for August 2026." source="UN Trade and Development (UNCTAD), based on national sources and IMF retrieved from LSEG Datastream." />
     </Block>
