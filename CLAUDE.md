@@ -34,7 +34,7 @@ Read `README.md` first for the overview, status and content workflow; the file m
 `npm run start` (dev server, port 8080, assume running), `npm run build`, `npm run format`, `npx biome check src`.
 
 ## TODO
-* `src/meta.json`: report PDF and publication URLs are set; replace the "more reports" URL (`more_reports_url`, still copied from the storyboard) with the real listing.
+* `src/meta.json`: report PDF, publication page and "more reports" URLs are final; the report PDF and publication page are not live yet (unpublished), so they return an error until UNCTAD publishes them.
 * Check copy and data against the final report; check mobile (390px) title area of the header and nav-dot contrast over tinted blocks.
 
 ## Rules for this project

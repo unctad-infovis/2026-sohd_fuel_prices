@@ -45,7 +45,7 @@ Run `npm run build` first. Then `npm run sync-gh-pages` (GitHub Pages, git subtr
 
 ## Used in
 
-* Not yet published. `src/meta.json` has the report PDF and publication page URLs; `more_reports_url` is still a placeholder (copied from the storyboard).
+* Not yet published. `src/meta.json` has the final report PDF, publication page and "more reports" URLs; the PDF and publication page go live when UNCTAD publishes the report.
 
 ## Rights of usage
 
