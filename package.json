@@ -1,0 +1,35 @@
+{
+  "name": "2026-sohd_fuel_prices",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "postbuild": "node -e \"import fs from 'node:fs';const p='dist/index.html',h=fs.readFileSync(p,'utf8');fs.writeFileSync(p,h.replace(/href=\\\"\\//g,'href=\\\"./').replace(/src=\\\"\\//g,'src=\\\"./'));\"",
+    "start": "vite --open",
+    "start_public": "vite --open --host",
+    "preview": "vite preview",
+    "format": "biome format --write src",
+    "lint:fix": "biome check --write src",
+    "login": "az login --service-principal -u $AZURE_USER -p $AZURE_PW --tenant $AZURE_TENANT",
+    "push": "git push && git push unctad main",
+    "sync-gh-pages": "git subtree push --prefix dist origin gh-pages",
+    "sync-prod": "azcopy copy \"dist/*\" \"https://${AZURE_STORAGE_NAME}.blob.core.windows.net/\\$web/${npm_package_name}/\" --include-path 'js;css;assets' --recursive --exclude-pattern '.DS_Store'"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.4",
+    "@mdx-js/react": "^3.1.1",
+    "@mdx-js/rollup": "^3.1.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "terser": "^5.49.0",
+    "vite": "^8.1.5"
+  },
+  "dependencies": {
+    "@unctad-infovis/general-tools": "^1.7.0",
+    "d3": "^7.9.0"
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true
+  }
+}
