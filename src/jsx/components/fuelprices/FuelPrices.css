@@ -56,7 +56,7 @@
 #app-root-2026-sohd_fuel_prices .app {
   --fp-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --fp-font: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --fp-indent: 0px;
+  --fp-indent: 45px;
   --fp-moire:
     repeating-linear-gradient(0deg, var(--fp-stripe) 0 1px, transparent 1px 4px), repeating-linear-gradient(0deg, var(--fp-stripe) 0 1px, transparent 1px 5px), repeating-linear-gradient(28deg, var(--fp-stripe2) 0 1px, transparent 1px 6px), repeating-linear-gradient(28deg, var(--fp-stripe2) 0 1px, transparent 1px 7px);
   --fp-stripe: color-mix(in srgb, var(--un-color-blue-dark) 5%, transparent);
@@ -73,6 +73,10 @@
   line-height: var(--un-line-height-normal);
   overflow-x: clip;
   position: relative;
+  /* Content sits under the title text, the arrow hangs to its left; on phones the content uses the full width */
+  @media (max-width: 600px) {
+    --fp-indent: 0px;
+  }
   /* Page background in two viewport-sized layers behind the content, position: fixed (not background-attachment: fixed, which Safari drops on very tall elements and iOS ignores; and not one page-tall element, whose repeating lines drift out of phase into visible bands) */
   &::before {
     background-image:
@@ -217,19 +221,19 @@
     color: #000;
     font-size: var(--un-font-size-normal);
     font-weight: var(--un-font-weight-bold);
-    margin: 0 0 18px;
+    margin: 0 0 18px var(--fp-indent);
     max-width: 860px;
     padding: 4px 0 4px 12px;
   }
   .caption {
     color: var(--un-color-grey-darkest);
     font-size: var(--un-font-size-xxs);
-    margin: 0 0 6px;
+    margin: 0 0 6px var(--fp-indent);
     max-width: none;
     padding: 0;
   }
   .meta {
-    margin: 20px 0 0;
+    margin: 20px 0 0 var(--fp-indent);
     max-width: 860px;
     .meta_row {
       color: var(--un-color-grey-darkest);
@@ -251,7 +255,7 @@
     }
   }
   .chart {
-    margin: 0;
+    margin: 0 0 0 var(--fp-indent);
     max-width: 860px;
     position: relative;
     svg {

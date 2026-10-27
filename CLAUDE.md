@@ -47,6 +47,7 @@ Read `README.md` first for the overview, status and content workflow; the file m
 * Chart subtitles end with a full stop (the titles do). Axis labels use `--un-color-grey-darkest`; x-axis years are bold. The conflict annotation text comes from `conflictLabel` in `helpers.js`.
 * Map colours (`mapClasses.js`, from the designers' second mockup): five classes, two blues up to 20% then yellow, orange and red above it, hatched stripes for no data; the big number and the fuel word in the step text use the same yellow-to-red gradient (`.maps_big`, `.maps_hl`). `MapFind.jsx` is the "Find an economy" search with a result box (outlines the economy on the map via `foundCode` in `FuelMap.jsx`).
 * Slide-by-slide review: log every agreed change in `tmp/review-changes.md` (git-ignored) so it can be summarised for colleagues by email after the review.
+* Chart slides: the title arrow hangs left of the content. `--fp-indent` (45px, 0 below 600px) is the left margin of `.chart`, `.legend`, `.insight`, `.caption`, `.meta`, `.tank`, `.globes` and `.keys`, so everything lines up with the title text.
 
 ## Commands
 ```bash
