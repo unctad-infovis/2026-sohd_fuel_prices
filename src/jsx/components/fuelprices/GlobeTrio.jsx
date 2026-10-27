@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Block from './Block.jsx';
 import { Accent, ChartHeader, ChartMeta } from './ChartParts.jsx';
-import { onceVisible, svgFor, tween, useFuelData } from './helpers.js';
+import { drawAxis, drawGrid, onceVisible, svgFor, tween, useFuelData, useWidthRedraw } from './helpers.js';
 
 const REGIONS = [
   { k: 'America', name: 'Latin America and the Caribbean', rot: [-64, -12] },
@@ -41,7 +41,7 @@ function globePath(rings, lon0, lat0, c, R) {
 
 /** One small line chart per region, under its globe: first and last values labelled, no tooltip. */
 function regionChart(col, r, animate, f) {
-  const el = col.select('.hz_globe_chart').node();
+  const el = col.select('.globe_chart').node();
   const T = f.t;
   const n = T.length;
   const v = f[r.k];
@@ -58,65 +58,35 @@ function regionChart(col, r, animate, f) {
     .attr('y', m.t)
     .attr('width', x(T[n - 1]) - x(s0))
     .attr('height', H - m.t - m.b)
-    .style('fill', 'url(#hz-hatch-yellow)');
+    .style('fill', 'url(#fp-hatch-yellow)');
   // The conflict label is only needed on the first chart
   if (r.k === REGIONS[0].k) {
-    const sl = svg.append('text').attr('class', 'hz_shade_label').attr('text-anchor', 'middle');
+    const sl = svg.append('text').attr('class', 'shade_label').attr('text-anchor', 'middle');
     for (const [j, l] of ['Middle East', 'conflict'].entries())
       sl.append('tspan')
         .attr('x', (x(s0) + x(T[n - 1])) / 2)
         .attr('y', H - m.b - 22 + j * 14)
         .text(l);
   }
-  const grid = svg.append('g').attr('class', 'hz_grid');
-  for (const t of [2, 4, 6]) {
-    grid
-      .append('line')
-      .attr('x1', 0)
-      .attr('x2', W - m.r)
-      .attr('y1', y(t))
-      .attr('y2', y(t));
-    grid
-      .append('text')
-      .attr('x', 0)
-      .attr('y', y(t) - 6)
-      .text(t === 6 ? '6%' : t);
-  }
-  const ax = svg.append('g').attr('class', 'hz_axis');
-  ax.append('line')
-    .attr('class', 'hz_axis_base')
-    .attr('x1', 0)
-    .attr('x2', W - m.r)
-    .attr('y1', y(0))
-    .attr('y2', y(0));
-  for (const [t, l, yr] of [
-    [Date.UTC(2025, 0, 15), 'Jan', '2025'],
-    [Date.UTC(2026, 1, 15), 'Feb', '2026'],
-    [Date.UTC(2026, 7, 15), 'Aug']
-  ]) {
-    const xx = x(t);
-    ax.append('line')
-      .attr('class', 'hz_axis_tick')
-      .attr('x1', xx)
-      .attr('x2', xx)
-      .attr('y1', y(0))
-      .attr('y2', y(0) + 5);
-    ax.append('text')
-      .attr('x', xx)
-      .attr('y', y(0) + 20)
-      .attr('text-anchor', 'middle')
-      .text(l);
-    if (yr)
-      ax.append('text')
-        .attr('class', 'hz_axis_year')
-        .attr('x', xx)
-        .attr('y', y(0) + 36)
-        .attr('text-anchor', 'middle')
-        .text(yr);
-  }
+  drawGrid(
+    svg,
+    y,
+    W - m.r,
+    [2, 4, 6].map(v => ({ label: v === 6 ? '6%' : v, v }))
+  );
+  drawAxis(
+    svg,
+    y(0),
+    W - m.r,
+    [
+      [Date.UTC(2025, 0, 15), 'Jan', '2025'],
+      [Date.UTC(2026, 1, 15), 'Feb', '2026'],
+      [Date.UTC(2026, 7, 15), 'Aug']
+    ].map(([t, label, year]) => ({ label, x: x(t), year }))
+  );
   const path = svg
     .append('path')
-    .attr('class', 'hz_globe_line')
+    .attr('class', 'globe_line')
     .attr(
       'd',
       d3
@@ -124,18 +94,18 @@ function regionChart(col, r, animate, f) {
         .x((_, k) => x(T[k]))
         .y(z => y(z))(v)
     );
-  const late = svg.append('g').attr('class', 'hz_globe_late');
-  late.append('circle').attr('class', 'hz_globe_dot').attr('cx', x(T[0])).attr('cy', y(v[0])).attr('r', 4);
+  const late = svg.append('g').attr('class', 'globe_late');
+  late.append('circle').attr('class', 'globe_dot').attr('cx', x(T[0])).attr('cy', y(v[0])).attr('r', 4);
   late
     .append('text')
-    .attr('class', 'hz_globe_start')
+    .attr('class', 'globe_start')
     .attr('x', x(T[0]))
     .attr('y', y(v[0]) - 12)
     .attr('text-anchor', 'middle')
     .text(`${v[0].toFixed(1)}%`);
   late
     .append('circle')
-    .attr('class', 'hz_globe_dot')
+    .attr('class', 'globe_dot')
     .attr('cx', x(T[n - 1]))
     .attr('cy', y(v[n - 1]))
     .attr('r', 4);
@@ -149,7 +119,7 @@ function regionChart(col, r, animate, f) {
   const bx = Math.min(W - 2 - bw, ex - bw / 2);
   late
     .append('rect')
-    .attr('class', 'hz_globe_box')
+    .attr('class', 'globe_box')
     .attr('x', bx)
     .attr('y', base - bh)
     .attr('width', bw)
@@ -157,11 +127,11 @@ function regionChart(col, r, animate, f) {
     .attr('rx', 2);
   late
     .append('path')
-    .attr('class', 'hz_globe_box')
+    .attr('class', 'globe_box')
     .attr('d', `M${ex - 7},${base - 1}L${ex + 7},${base - 1}L${ex},${tip}Z`);
   late
     .append('text')
-    .attr('class', 'hz_globe_box_text')
+    .attr('class', 'globe_box_text')
     .attr('x', bx + bw / 2)
     .attr('y', base - bh / 2 + 5)
     .attr('text-anchor', 'middle')
@@ -182,6 +152,7 @@ function regionChart(col, r, animate, f) {
 export default function GlobeTrio() {
   const payload = useFuelData();
   const ref = useRef(null);
+  const redrawRef = useRef(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -194,29 +165,29 @@ export default function GlobeTrio() {
     const cols = d3
       .select(el)
       .html('')
-      .selectAll('div.hz_globe_col')
+      .selectAll('div.globe_col')
       .data(REGIONS)
       .join('div')
-      .attr('class', r => `hz_globe_col hz_globe_col--${r.k}`);
+      .attr('class', r => `globe_col globe_col--${r.k}`);
     const globes = [];
     cols.each(function (r) {
       const col = d3.select(this);
-      const svg = col.append('div').attr('class', 'hz_globe').attr('aria-hidden', 'true').append('svg').attr('viewBox', `0 0 ${size} ${size}`);
+      const svg = col.append('div').attr('class', 'globe').attr('aria-hidden', 'true').append('svg').attr('viewBox', `0 0 ${size} ${size}`);
       svg
         .append('circle')
-        .attr('class', 'hz_globe_ocean')
+        .attr('class', 'globe_ocean')
         .attr('cx', size / 2)
         .attr('cy', size / 2)
         .attr('r', R);
-      const land = svg.append('g').selectAll('path').data(codes).join('path').attr('class', 'hz_globe_land');
+      const land = svg.append('g').selectAll('path').data(codes).join('path').attr('class', 'globe_land');
       svg
         .append('circle')
-        .attr('class', 'hz_globe_rim')
+        .attr('class', 'globe_rim')
         .attr('cx', size / 2)
         .attr('cy', size / 2)
         .attr('r', R);
-      col.append('h4').attr('class', 'hz_globe_name').text(r.name);
-      col.append('figure').attr('class', 'hz_globe_chart');
+      col.append('h4').attr('class', 'globe_name').text(r.name);
+      col.append('figure').attr('class', 'globe_chart');
       const g = { col, r, rot: [r.rot[0] - 140, r.rot[1]] };
       g.draw = ([lon, lat]) => {
         g.rot = [lon, lat];
@@ -256,27 +227,21 @@ export default function GlobeTrio() {
       0.3
     );
 
-    let timer;
-    let lastW = window.innerWidth;
-    const onResize = () => {
-      if (Math.abs(window.innerWidth - lastW) < 2) return;
-      lastW = window.innerWidth;
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        for (const g of globes) if (g.col.select('svg[role=img]').size()) regionChart(g.col, g.r, false, DATA.infl);
-      }, 180);
+    // Charts that have already drawn are redrawn at the new width
+    redrawRef.current = () => {
+      for (const g of globes) if (g.col.select('svg[role=img]').size()) regionChart(g.col, g.r, false, DATA.infl);
     };
-    window.addEventListener('resize', onResize);
     return () => {
       stop();
-      clearTimeout(timer);
+      redrawRef.current = null;
       for (const t of timers) clearTimeout(t);
-      window.removeEventListener('resize', onResize);
     };
   }, [payload]);
+  const redraw = useCallback(() => redrawRef.current?.(), []);
+  useWidthRedraw(redraw, !!payload);
 
   return (
-    <Block id="hz-regions" nav="By region">
+    <Block id="fp-regions" nav="By region">
       <ChartHeader
         subtitle="Monthly year-on-year inflation rate in developing countries, median by region."
         title={
@@ -285,7 +250,7 @@ export default function GlobeTrio() {
           </>
         }
       />
-      <div className="hz_globes hz_globes--charts" ref={ref} />
+      <div className="globes globes--charts" ref={ref} />
       <ChartMeta note="The depicted data covers 91 developing countries (33 in Africa, 23 in Latin America and the Caribbean, 35 in Asia and Oceania) for which inflation data was available for August 2026." source="UN Trade and Development (UNCTAD), based on national sources and IMF retrieved from LSEG Datastream." />
     </Block>
   );

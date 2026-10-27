@@ -15,9 +15,9 @@ export default function TornadoChart() {
     if (!L || !el) return undefined;
     // Value labels move outside the bar when the bar is too short to hold them
     const fit = () => {
-      for (const c of el.querySelectorAll('.hz_tornado_cell')) {
-        const b = c.querySelector('.hz_tornado_value');
-        const w = c.clientWidth * Number(c.style.getPropertyValue('--hz-s'));
+      for (const c of el.querySelectorAll('.tornado_cell')) {
+        const b = c.querySelector('.tornado_value');
+        const w = c.clientWidth * Number(c.style.getPropertyValue('--fp-s'));
         c.classList.toggle('is-out', w < b.offsetWidth + 10);
       }
     };
@@ -28,8 +28,8 @@ export default function TornadoChart() {
       instant => {
         el.classList.add('is-playing');
         if (instant) return;
-        for (const [i, row] of el.querySelectorAll('.hz_tornado_row').entries())
-          for (const b of row.querySelectorAll('.hz_tornado_value')) {
+        for (const [i, row] of el.querySelectorAll('.tornado_row').entries())
+          for (const b of row.querySelectorAll('.tornado_value')) {
             const to = Number(b.dataset.v);
             b.textContent = '0%';
             tween(
@@ -53,7 +53,7 @@ export default function TornadoChart() {
   const label = L ? `Increase of local retail prices of diesel and gasoline in least developed countries: ${L.map(d => `${d.n}, diesel +${d.d}%, gasoline +${d.g}%`).join('; ')}.` : undefined;
 
   return (
-    <Block id="hz-ldc" nav="Vulnerable economies" tinted>
+    <Block id="fp-ldc" nav="Vulnerable economies" tinted>
       <ChartHeader
         subtitle="Increase of local retail prices of diesel and gasoline for least developed countries, in per cent."
         title={
@@ -62,18 +62,18 @@ export default function TornadoChart() {
           </>
         }
       />
-      <div aria-label={label} className="hz_chart hz_tornado" ref={ref} role="img">
+      <div aria-label={label} className="chart tornado" ref={ref} role="img">
         {L && (
           <>
-            <div aria-hidden="true" className="hz_tornado_head">
-              <span className="hz_tornado_fuel hz_tornado_fuel--d">
+            <div aria-hidden="true" className="tornado_head">
+              <span className="tornado_fuel tornado_fuel--d">
                 Diesel
-                <svg aria-hidden="true" className="hz_flip">
+                <svg aria-hidden="true" className="flip">
                   <use href="#ic-truck" />
                 </svg>
               </span>
               <span />
-              <span className="hz_tornado_fuel hz_tornado_fuel--g">
+              <span className="tornado_fuel tornado_fuel--g">
                 <svg aria-hidden="true">
                   <use href="#ic-car" />
                 </svg>
@@ -81,17 +81,17 @@ export default function TornadoChart() {
               </span>
             </div>
             {L.map((d, i) => (
-              <div aria-hidden="true" className="hz_tornado_row" key={d.n} style={{ '--hz-i': i }}>
-                <div className="hz_tornado_cell hz_tornado_cell--d" style={{ '--hz-s': (d.d / mx).toFixed(4) }}>
-                  <span className="hz_tornado_bar" />
-                  <b className="hz_tornado_value" data-v={d.d}>
+              <div aria-hidden="true" className="tornado_row" key={d.n} style={{ '--fp-i': i }}>
+                <div className="tornado_cell tornado_cell--d" style={{ '--fp-s': (d.d / mx).toFixed(4) }}>
+                  <span className="tornado_bar" />
+                  <b className="tornado_value" data-v={d.d}>
                     {d.d}%
                   </b>
                 </div>
-                <div className="hz_tornado_name">{d.n}</div>
-                <div className="hz_tornado_cell hz_tornado_cell--g" style={{ '--hz-s': (d.g / mx).toFixed(4) }}>
-                  <span className="hz_tornado_bar" />
-                  <b className="hz_tornado_value" data-v={d.g}>
+                <div className="tornado_name">{d.n}</div>
+                <div className="tornado_cell tornado_cell--g" style={{ '--fp-s': (d.g / mx).toFixed(4) }}>
+                  <span className="tornado_bar" />
+                  <b className="tornado_value" data-v={d.g}>
                     {d.g}%
                   </b>
                 </div>

@@ -3,10 +3,10 @@ import Block from './Block.jsx';
 import { onceVisible } from './helpers.js';
 
 const SENTENCES = [
-  { cls: 'hz_intro_sentence--lead', text: 'Energy shocks go far beyond crude oil.' },
+  { cls: 'intro_sentence--lead', text: 'Energy shocks go far beyond crude oil.' },
   { text: 'Fuel prices are already rising, and the cost of living is likely to rise with them.' },
-  { cls: 'hz_intro_sentence--one-line', text: 'The impact will reach every corner of the world.' },
-  { cls: 'hz_intro_sentence--last', text: 'But vulnerable households are being hit hardest.' }
+  { cls: 'intro_sentence--one-line', text: 'The impact will reach every corner of the world.' },
+  { cls: 'intro_sentence--last', text: 'But vulnerable households are being hit hardest.' }
 ];
 
 export default function Intro() {
@@ -14,7 +14,7 @@ export default function Intro() {
 
   useEffect(() => {
     const sec = ref.current;
-    const lines = [...sec.querySelectorAll('.hz_intro_sentence')];
+    const lines = [...sec.querySelectorAll('.intro_sentence')];
     const timers = [];
     const stop = onceVisible(
       sec,
@@ -36,19 +36,19 @@ export default function Intro() {
 
   return (
     <div ref={ref}>
-      <Block className="hz_block--intro" id="hz-intro" inner={false} nav="Introduction">
-        <svg aria-hidden="true" className="hz_intro_waves" viewBox="-500 -500 1000 1000">
+      <Block className="block--intro" id="fp-intro" inner={false} nav="Introduction">
+        <svg aria-hidden="true" className="intro_waves" viewBox="-500 -500 1000 1000">
           {[140, 260, 380].map(r => (
-            <circle className="hz_intro_trace" key={r} r={r} />
+            <circle className="intro_trace" key={r} r={r} />
           ))}
           {[0, 1, 2, 3].map(i => (
-            <circle className="hz_intro_ring" key={i} r="40" />
+            <circle className="intro_ring" key={i} r="40" />
           ))}
-          <circle className="hz_intro_core" r="7" />
+          <circle className="intro_core" r="7" />
         </svg>
-        <div className="hz_intro_text">
+        <div className="intro_text">
           {SENTENCES.map(s => (
-            <p className={`hz_intro_sentence${s.cls ? ` ${s.cls}` : ''}`} key={s.text}>
+            <p className={`intro_sentence${s.cls ? ` ${s.cls}` : ''}`} key={s.text}>
               {s.text}
             </p>
           ))}

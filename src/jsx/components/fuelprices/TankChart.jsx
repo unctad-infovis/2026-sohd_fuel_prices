@@ -29,21 +29,21 @@ export default function TankChart() {
     const active = `M${ox} ${oy} C${ox + 55} ${oy + 20} ${fx - 95} ${G + 6} ${fx} ${fy}`;
     // ILL holds the car and pump drawings as SVG markup
     scene.innerHTML = `<svg viewBox="0 0 760 360" role="img" aria-label="A car drives to a fuel pump; filling 40 litres of fuel now costs an extra 10% of a month's income in low-income countries">
-    <rect class="hz_tank_ground" x="0" y="${G}" width="760" height="7"/>
+    <rect class="tank_ground" x="0" y="${G}" width="760" height="7"/>
     <g transform="translate(${PX},${G}) scale(${PK})">${ILL.pump}
-      <rect class="hz_tank_display_box" x="-34" y="-161" width="54" height="30" rx="2"/><text class="hz_tank_display" data-role="display" x="-7" y="-139" text-anchor="middle" style="font-size:20px">+0%</text></g>
-    <path class="hz_tank_hose" data-role="hose-parked" d="${parked}"/>
-    <path class="hz_tank_hose" data-role="hose-active" d="${active}" opacity="0"/>
-    <path class="hz_tank_flow" data-role="flow" d="${active}"/>
-    <g data-role="car" transform="translate(${START},${G}) scale(${CK})">${ILL.carShadow}${ILL.carBody}<rect class="hz_tank_cap" x="-42.4" y="-22.4" width="3.2" height="2.4" rx=".6"/>
+      <rect class="tank_display_box" x="-34" y="-161" width="54" height="30" rx="2"/><text class="tank_display" data-role="display" x="-7" y="-139" text-anchor="middle" style="font-size:20px">+0%</text></g>
+    <path class="tank_hose" data-role="hose-parked" d="${parked}"/>
+    <path class="tank_hose" data-role="hose-active" d="${active}" opacity="0"/>
+    <path class="tank_flow" data-role="flow" d="${active}"/>
+    <g data-role="car" transform="translate(${START},${G}) scale(${CK})">${ILL.carShadow}${ILL.carBody}<rect class="tank_cap" x="-42.4" y="-22.4" width="3.2" height="2.4" rx=".6"/>
       <g data-role="wheel-l">${ILL.wheelL}</g><g data-role="wheel-r">${ILL.wheelR}</g></g>
       </svg>`;
     const role = r => scene.querySelector(`[data-role="${r}"]`);
     const mxv = d3.max(DATA.tank, t => t.v);
-    income.innerHTML = `<h4 class="hz_income_title">Median by income group</h4>${DATA.tank
+    income.innerHTML = `<h4 class="income_title">Median by income group</h4>${DATA.tank
       .map(
         (t, i) =>
-          `<div class="hz_income_row${i === 0 ? ' hz_income_row--low' : ''}"><div class="hz_income_group">${esc(t.g.replace(' income', ''))}<small class="hz_income_n">${t.n} economies</small></div><div class="hz_income_bar" style="--hz-w:${((t.v / mxv) * 100).toFixed(1)}%"><span class="hz_income_fill"></span><em class="hz_income_value" data-v="${t.v}">+0.0%</em></div></div>`
+          `<div class="income_row${i === 0 ? ' income_row--low' : ''}"><div class="income_group">${esc(t.g.replace(' income', ''))}<small class="income_n">${t.n} economies</small></div><div class="income_bar" style="--fp-w:${((t.v / mxv) * 100).toFixed(1)}%"><span class="income_fill"></span><em class="income_value" data-v="${t.v}">+0.0%</em></div></div>`
       )
       .join('')}`;
     const hoseA = role('hose-active');
@@ -57,7 +57,7 @@ export default function TankChart() {
       role('wheel-r').setAttribute('transform', `rotate(${deg} 31 -9.2)`);
     };
     const countBars = instant => {
-      for (const [i, em] of [...income.querySelectorAll('.hz_income_value')].entries()) {
+      for (const [i, em] of [...income.querySelectorAll('.income_value')].entries()) {
         const to = Number(em.dataset.v);
         if (instant) {
           em.textContent = `+${to.toFixed(1)}%`;
@@ -134,7 +134,7 @@ export default function TankChart() {
   }, [payload]);
 
   return (
-    <Block className="hz_block--tank" id="hz-tank" nav="Cost of a tank">
+    <Block className="block--tank" id="fp-tank" nav="Cost of a tank">
       <ChartHeader
         subtitle="Increase in the cost of 40 litres of fuel in per cent of monthly gross domestic product per capita."
         title={
@@ -143,9 +143,9 @@ export default function TankChart() {
           </>
         }
       />
-      <div className="hz_tank" ref={stageRef}>
-        <div className="hz_tank_scene" ref={sceneRef} />
-        <div className="hz_income" ref={incomeRef} />
+      <div className="tank" ref={stageRef}>
+        <div className="tank_scene" ref={sceneRef} />
+        <div className="income" ref={incomeRef} />
       </div>
       <ChartMeta
         note="Change of the local cost of 40 litres of fuel since the start of the Middle East conflict until 19 October 2026, compared to the six months before the conflict (weekly, 1 September 2025 – 23 February 2026) based on fuel prices and GDP in local currencies. Countries are classified according to the World Bank income groups."

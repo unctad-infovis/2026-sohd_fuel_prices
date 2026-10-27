@@ -1,5 +1,3 @@
-import { useRef } from 'react';
-
 import Article from '../Article.mdx';
 
 import Footer from './components/fuelprices/Footer.jsx';
@@ -42,12 +40,8 @@ const components = {
 };
 
 const App = ({ meta }) => {
-  const appRef = useRef();
-
-  window.appRef = appRef;
-
   return (
-    <div className="app" ref={appRef}>
+    <div className="app">
       <Article components={components} meta={meta} />
     </div>
   );

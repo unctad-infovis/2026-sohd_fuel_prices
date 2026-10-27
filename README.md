@@ -45,7 +45,7 @@ Run `npm run build` first. Then `npm run sync-gh-pages` (GitHub Pages, git subtr
 
 ## Used in
 
-* Not yet published. `src/meta.json` still points to the storyboard's publication page as a placeholder.
+* Not yet published. `src/meta.json` has the report PDF and publication page URLs; `more_reports_url` is still a placeholder (copied from the storyboard).
 
 ## Rights of usage
 

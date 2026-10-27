@@ -15,26 +15,26 @@ export default function KeyConsiderations() {
   const ref = useRef(null);
 
   useEffect(() => {
-    const stops = [...ref.current.querySelectorAll('.hz_key')].map(row => onceVisible(row, () => row.classList.add('is-in'), 0.35));
+    const stops = [...ref.current.querySelectorAll('.key')].map(row => onceVisible(row, () => row.classList.add('is-in'), 0.35));
     return () => {
       for (const s of stops) s();
     };
   }, []);
 
   return (
-    <Block className="hz_block--keys" id="hz-keys" nav="Key considerations">
+    <Block className="block--keys" id="fp-keys" nav="Key considerations">
       <ChartHeader title="Key considerations" />
-      <ol className="hz_keys" ref={ref}>
+      <ol className="keys" ref={ref}>
         {KEYS.map(k => (
-          <li className="hz_key" key={k.title}>
-            <span className="hz_key_icon">
+          <li className="key" key={k.title}>
+            <span className="key_icon">
               <svg aria-hidden="true">
                 <use href={`#${k.icon}`} />
               </svg>
             </span>
-            <div className="hz_key_text">
-              <h4 className="hz_key_title">{k.title}</h4>
-              <p className="hz_key_body">
+            <div className="key_text">
+              <h4 className="key_title">{k.title}</h4>
+              <p className="key_body">
                 {k.text} <strong>{k.strong}</strong>
                 {k.end}
               </p>

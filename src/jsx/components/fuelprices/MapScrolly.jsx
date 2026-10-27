@@ -36,13 +36,13 @@ export default function MapScrolly() {
       entries => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
-          const step = e.target.closest('.hz_maps_step');
+          const step = e.target.closest('.maps_step');
           const m = step.dataset.mode;
           setMode(m);
           // The big number counts up the first time its step is read
           if (counted.current[m]) continue;
           counted.current[m] = true;
-          const cnt = step.querySelector('.hz_maps_count');
+          const cnt = step.querySelector('.maps_count');
           const { hot } = statsRef.current[m];
           if (isStill()) cnt.textContent = fmtInt(hot);
           else
@@ -59,9 +59,9 @@ export default function MapScrolly() {
       },
       { rootMargin: '-45% 0px -45% 0px' }
     );
-    for (const c of box.querySelectorAll('.hz_maps_title')) io.observe(c);
+    for (const c of box.querySelectorAll('.maps_title')) io.observe(c);
     // The steps take the real height of the map, so the texts sit level with it
-    const ro = new ResizeObserver(() => box.style.setProperty('--hz-maps-h', `${stickyRef.current.offsetHeight}px`));
+    const ro = new ResizeObserver(() => box.style.setProperty('--fp-maps-h', `${stickyRef.current.offsetHeight}px`));
     ro.observe(stickyRef.current);
     return () => {
       io.disconnect();
@@ -70,17 +70,17 @@ export default function MapScrolly() {
   }, [stats]);
 
   const step = (m, icon, fuel, flip) => (
-    <div className={`hz_maps_step${mode === m ? ' is-on' : ''}`} data-mode={m}>
-      <div className="hz_maps_card">
-        <p className="hz_maps_fuel">
-          <svg aria-hidden="true" className={flip ? 'hz_flip' : undefined}>
+    <div className={`maps_step${mode === m ? ' is-on' : ''}`} data-mode={m}>
+      <div className="maps_card">
+        <p className="maps_fuel">
+          <svg aria-hidden="true" className={flip ? 'flip' : undefined}>
             <use href={`#${icon}`} />
           </svg>
           {fuel}
         </p>
-        <h3 className="hz_maps_title">
-          <span className="hz_maps_big">
-            <span className="hz_maps_count">{stats ? fmtInt(stats[m].hot) : ''}</span> <span className="hz_maps_unit">countries</span>
+        <h3 className="maps_title">
+          <span className="maps_big">
+            <span className="maps_count">{stats ? fmtInt(stats[m].hot) : ''}</span> <span className="maps_unit">countries</span>
           </span>{' '}
           experienced increases in local {FUEL_NAME[m]} prices by more than {THRESHOLD}%.
         </h3>
@@ -89,29 +89,29 @@ export default function MapScrolly() {
   );
 
   return (
-    <Block className="hz_block--map-scrolly" id="hz-maps" nav="At the pump">
-      <div className="hz_maps" ref={boxRef}>
-        <div className="hz_maps_steps">
+    <Block className="block--map-scrolly" id="fp-maps" nav="At the pump">
+      <div className="maps" ref={boxRef}>
+        <div className="maps_steps">
           {step('d', 'ic-truck', 'Diesel', true)}
           {step('g', 'ic-car', 'Gasoline', false)}
         </div>
-        <div className="hz_maps_sticky" ref={stickyRef}>
-          <p aria-live="polite" className="hz_maps_caption">
-            Change in local retail prices of <span className="hz_maps_caption_fuel">{FUEL_NAME[mode]}</span> since the start of the Middle East conflict, in per cent
+        <div className="maps_sticky" ref={stickyRef}>
+          <p aria-live="polite" className="maps_caption">
+            Change in local retail prices of <span className="maps_caption_fuel">{FUEL_NAME[mode]}</span> since the start of the Middle East conflict, in per cent
           </p>
-          <ul className="hz_classes">
+          <ul className="classes">
             {legend.map(item => (
-              <li className="hz_classes_item" key={item.label}>
-                <span className="hz_classes_key" style={{ background: item.color }} />
+              <li className="classes_item" key={item.label}>
+                <span className="classes_key" style={{ background: item.color }} />
                 {item.label}
               </li>
             ))}
-            <li className="hz_classes_item">
-              <span className="hz_classes_key hz_classes_key--none" />
+            <li className="classes_item">
+              <span className="classes_key classes_key--none" />
               No data
             </li>
           </ul>
-          <figure className="hz_chart hz_map hz_maps_chart">
+          <figure className="chart map maps_chart">
             <FuelMap mode={mode} rows={rows} topology={topology} />
           </figure>
         </div>
@@ -120,7 +120,7 @@ export default function MapScrolly() {
         note={`Change of average local prices at the pump since the start of the Middle East conflict until 19 October 2026, compared to the six months before the conflict (weekly, 1 September 2025 – 23 February 2026). Computations for ${stats ? fmtInt(stats[mode].n) : ''} economies, based on prices in local currencies.`}
         source="UN Trade and Development (UNCTAD), based on Global Petrol Prices and national sources."
       >
-        <p className="hz_meta_row hz_meta_row--disclaimer">
+        <p className="meta_row meta_row--disclaimer">
           The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations. Please see:{' '}
           <a href="https://unctad.org/map-disclaimer" rel="noopener" target="_blank">
             unctad.org/map-disclaimer

@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { useCallback, useEffect, useRef } from 'react';
 import Block from './Block.jsx';
 import { Accent, ChartHeader, ChartMeta, HATCH_LEGEND, Legend } from './ChartParts.jsx';
-import { CONFLICT_LABEL, conflictLabel, easeInOut, onceVisible, svgFor, tween, useFuelData, useWidthRedraw } from './helpers.js';
+import { CONFLICT_LABEL, conflictLabel, drawAxis, drawGrid, easeInOut, onceVisible, svgFor, tween, useFuelData, useWidthRedraw } from './helpers.js';
 
 export default function GapChart() {
   const payload = useFuelData();
@@ -29,14 +29,14 @@ export default function GapChart() {
     const xe = x(T[n - 1]);
     const svg = svgFor(el, W, H, 'Monthly inflation rate: developing countries rose from 3.2% in February 2026 to 4.8% in August 2026, developed countries from 2.5% to 3.2%; the gap between the two groups widened from 0.7 to 1.6 percentage points.');
     const defs = svg.append('defs');
-    const gr = defs.append('linearGradient').attr('id', 'hz-gap-grad').attr('gradientUnits', 'userSpaceOnUse').attr('x1', 0).attr('x2', W).attr('y1', 0).attr('y2', 0);
+    const gr = defs.append('linearGradient').attr('id', 'fp-gap-grad').attr('gradientUnits', 'userSpaceOnUse').attr('x1', 0).attr('x2', W).attr('y1', 0).attr('y2', 0);
     gr.append('stop')
-      .attr('class', 'hz_gap_before')
+      .attr('class', 'gap_before')
       .attr('offset', (cx / W).toFixed(4));
     gr.append('stop')
-      .attr('class', 'hz_gap_after')
+      .attr('class', 'gap_after')
       .attr('offset', (cx / W).toFixed(4));
-    const clip = defs.append('clipPath').attr('id', 'hz-gap-clip').append('rect').attr('x', 0).attr('y', 0).attr('width', 0).attr('height', H);
+    const clip = defs.append('clipPath').attr('id', 'fp-gap-clip').append('rect').attr('x', 0).attr('y', 0).attr('width', 0).attr('height', H);
     svg
       .append('rect')
       .attr('data-ev', 'c')
@@ -44,57 +44,27 @@ export default function GapChart() {
       .attr('y', m.t)
       .attr('width', xe - cx)
       .attr('height', H - m.t - m.b)
-      .style('fill', 'url(#hz-hatch-yellow)');
-    const grid = svg.append('g').attr('class', 'hz_grid');
-    for (const v of [1, 2, 3, 4, 5]) {
-      grid
-        .append('line')
-        .attr('x1', 0)
-        .attr('x2', xe + 4)
-        .attr('y1', y(v))
-        .attr('y2', y(v));
-      grid
-        .append('text')
-        .attr('x', 0)
-        .attr('y', y(v) - 6)
-        .text(v === 5 ? '5%' : v);
-    }
-    const ax = svg.append('g').attr('class', 'hz_axis');
-    ax.append('line')
-      .attr('class', 'hz_axis_base')
-      .attr('x1', 0)
-      .attr('x2', xe + 4)
-      .attr('y1', y(0))
-      .attr('y2', y(0));
-    for (const a of [
-      [2025, 0, 'Jan', '2025'],
-      [2025, 6, 'Jul'],
-      [2026, 0, 'Jan', '2026'],
-      [2026, 6, 'Jul']
-    ]) {
-      const xx = x(Date.UTC(a[0], a[1], 15));
-      ax.append('line')
-        .attr('class', 'hz_axis_tick')
-        .attr('x1', xx)
-        .attr('x2', xx)
-        .attr('y1', y(0))
-        .attr('y2', y(0) + 5);
-      ax.append('text')
-        .attr('x', xx)
-        .attr('y', y(0) + 20)
-        .attr('text-anchor', 'middle')
-        .text(a[2]);
-      if (a[3])
-        ax.append('text')
-          .attr('class', 'hz_axis_year')
-          .attr('x', xx)
-          .attr('y', y(0) + 36)
-          .attr('text-anchor', 'middle')
-          .text(a[3]);
-    }
+      .style('fill', 'url(#fp-hatch-yellow)');
+    drawGrid(
+      svg,
+      y,
+      xe + 4,
+      [1, 2, 3, 4, 5].map(v => ({ label: v === 5 ? '5%' : v, v }))
+    );
+    drawAxis(
+      svg,
+      y(0),
+      xe + 4,
+      [
+        [2025, 0, 'Jan', '2025'],
+        [2025, 6, 'Jul'],
+        [2026, 0, 'Jan', '2026'],
+        [2026, 6, 'Jul']
+      ].map(([yr, mo, label, year]) => ({ label, x: x(Date.UTC(yr, mo, 15)), year }))
+    );
     const cg = svg.append('g').attr('data-ev', 'c');
     cg.append('line')
-      .attr('class', 'hz_oil_conflict')
+      .attr('class', 'oil_conflict')
       .attr('x1', cx)
       .attr('x2', cx)
       .attr('y1', m.t - 30)
@@ -122,14 +92,14 @@ export default function GapChart() {
           .y0((_, k) => y(B[k]))
           .y1((_, k) => y(A[k]))(T)
       )
-      .style('fill', 'url(#hz-gap-grad)')
-      .attr('clip-path', 'url(#hz-gap-clip)');
-    svg.append('path').attr('class', 'hz_gap_line hz_gap_line--dev').attr('d', line(A)).attr('clip-path', 'url(#hz-gap-clip)');
-    svg.append('path').attr('class', 'hz_gap_line hz_gap_line--dvd').attr('d', line(B)).attr('clip-path', 'url(#hz-gap-clip)');
+      .style('fill', 'url(#fp-gap-grad)')
+      .attr('clip-path', 'url(#fp-gap-clip)');
+    svg.append('path').attr('class', 'gap_line gap_line--dev').attr('d', line(A)).attr('clip-path', 'url(#fp-gap-clip)');
+    svg.append('path').attr('class', 'gap_line gap_line--dvd').attr('d', line(B)).attr('clip-path', 'url(#fp-gap-clip)');
     const fsv = narrow ? 'var(--un-font-size-xxxs)' : 'var(--un-font-size-xxs)';
     svg
       .append('text')
-      .attr('class', 'hz_gap_dev')
+      .attr('class', 'gap_dev')
       .attr('x', x(T[0]) - 14)
       .attr('y', y(A[0]) - 6)
       .attr('text-anchor', 'end')
@@ -137,37 +107,37 @@ export default function GapChart() {
       .text(`${A[0].toFixed(1)}%`);
     svg
       .append('text')
-      .attr('class', 'hz_gap_dvd')
+      .attr('class', 'gap_dvd')
       .attr('x', x(T[0]) - 14)
       .attr('y', y(B[0]) + 16)
       .attr('text-anchor', 'end')
       .style('font-size', fsv)
       .text(`${B[0].toFixed(1)}%`);
     // Open circles mark where the lines start, like the end points
-    svg.append('circle').attr('class', 'hz_point hz_point--yellow').attr('cx', x(T[0])).attr('cy', y(A[0])).attr('r', 5.5).attr('clip-path', 'url(#hz-gap-clip)');
-    svg.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', x(T[0])).attr('cy', y(B[0])).attr('r', 5.5).attr('clip-path', 'url(#hz-gap-clip)');
+    svg.append('circle').attr('class', 'point point--yellow').attr('cx', x(T[0])).attr('cy', y(A[0])).attr('r', 5.5).attr('clip-path', 'url(#fp-gap-clip)');
+    svg.append('circle').attr('class', 'point point--blue').attr('cx', x(T[0])).attr('cy', y(B[0])).attr('r', 5.5).attr('clip-path', 'url(#fp-gap-clip)');
     // Reading head: two dots that ride on the lines while they draw
     const live = svg.append('g').style('opacity', 0);
-    const ha = live.append('circle').attr('class', 'hz_head_dot hz_head_dot--yellow').attr('r', 5.5);
-    const hb = live.append('circle').attr('class', 'hz_head_dot hz_head_dot--blue').attr('r', 5.5);
+    const ha = live.append('circle').attr('class', 'head_dot head_dot--yellow').attr('r', 5.5);
+    const hb = live.append('circle').attr('class', 'head_dot head_dot--blue').attr('r', 5.5);
     const ya = y(A[n - 1]);
     const yb = y(B[n - 1]);
     const bx = xe + 14;
     const eg = svg.append('g').attr('data-ev', 'e');
-    eg.append('circle').attr('class', 'hz_point hz_point--yellow').attr('cx', xe).attr('cy', ya).attr('r', 5.5);
-    eg.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', xe).attr('cy', yb).attr('r', 5.5);
+    eg.append('circle').attr('class', 'point point--yellow').attr('cx', xe).attr('cy', ya).attr('r', 5.5);
+    eg.append('circle').attr('class', 'point point--blue').attr('cx', xe).attr('cy', yb).attr('r', 5.5);
     for (const [name, v, yy, cls] of [
-      ['Developing', A[n - 1], ya, 'hz_gap_dev'],
-      ['Developed', B[n - 1], yb, 'hz_gap_dvd']
+      ['Developing', A[n - 1], ya, 'gap_dev'],
+      ['Developed', B[n - 1], yb, 'gap_dvd']
     ]) {
       eg.append('text')
-        .attr('class', `${cls} hz_gap_end_name`)
+        .attr('class', `${cls} gap_end_name`)
         .attr('x', bx + 6)
         .attr('y', yy - (narrow ? 16 : 22))
         .style('font-size', narrow ? 'var(--un-font-size-xxxs)' : 'var(--un-font-size-xs)')
         .text(name);
       eg.append('text')
-        .attr('class', `${cls} hz_gap_end_value`)
+        .attr('class', `${cls} gap_end_value`)
         .attr('x', bx + 4)
         .attr('y', yy + (narrow ? 9 : 14))
         .style('font-size', narrow ? 'var(--un-font-size-xl)' : 'var(--un-font-size-xxxl)')
@@ -244,7 +214,7 @@ export default function GapChart() {
   useWidthRedraw(draw, !!payload);
 
   return (
-    <Block id="hz-inflation" nav="Inflation" tinted>
+    <Block id="fp-inflation" nav="Inflation" tinted>
       <ChartHeader
         subtitle="Monthly year-on-year inflation rate in developed and developing countries, median by country group."
         title={
@@ -253,8 +223,8 @@ export default function GapChart() {
           </>
         }
       />
-      <Legend items={[{ label: 'Developing countries', line: 'hz_legend_key--yellow' }, { label: 'Developed countries' }, HATCH_LEGEND]} />
-      <figure className="hz_chart" ref={chartRef} />
+      <Legend items={[{ label: 'Developing countries', line: 'legend_key--yellow' }, { label: 'Developed countries' }, HATCH_LEGEND]} />
+      <figure className="chart" ref={chartRef} />
       <ChartMeta
         note="The depicted data covers 91 developing countries (33 in Africa, 23 in Latin America and the Caribbean, 35 in Asia and Oceania) and 47 developed countries for which inflation data was available for August 2026."
         source="UN Trade and Development (UNCTAD), based on national sources and IMF retrieved from LSEG Datastream."

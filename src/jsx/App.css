@@ -1,12 +1,8 @@
-:root {
-  /* Report-specific additions */
-  --main-color: #009edb;
+#app-root-2026-sohd_fuel_prices .app {
+  /* Report-specific additions to the design tokens */
   --un-font-weight-light: 300;
   --un-line-height-xl: 1.4;
   --un-line-height-xxl: 1.6;
-}
-
-#app-root-2026-sohd_fuel_prices .app {
   .fp_container {
     background-attachment: fixed;
     background-color: #fff;

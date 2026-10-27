@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
+import { isStill } from './helpers.js';
 import './SlideNav.css';
 
-const CONTAINER = '.fp_container';
+// Queries stay inside this project's root element, so the page around it is never touched
+const ROOT = `#app-root-${__PROJECT_NAME__}`;
+const CONTAINER = `${ROOT} .fp_container`;
 
 function scrollToY(target) {
   const start = window.scrollY;
   const dist = Math.round(target) - start;
   if (!dist) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (isStill()) {
     window.scrollTo(0, target);
     return;
   }
@@ -79,7 +82,7 @@ export default function SlideNav() {
     if (cur < 0) scrollToSection(0);
     else if (cur < n - 1) scrollToSection(cur + 1);
     else {
-      const footer = document.querySelector('.footer_container');
+      const footer = document.querySelector(`${ROOT} .footer_container`);
       if (footer) scrollToY(footer.getBoundingClientRect().top + window.scrollY);
     }
   };

@@ -16,31 +16,32 @@ Read `README.md` first for the overview, status and content workflow; the file m
 
 ## Files (`src/jsx/components/fuelprices/`)
 * `helpers.js` – `useFuelData()` loads the single JSON once; `useWidthRedraw`, `onceVisible`, formatting helpers.
-* `Block.jsx`, `ChartParts.jsx` – shared section wrapper (`.hz_block > .hz_block_inner`, `data-nav` label feeds SlideNav), titles, legends, source/note.
+* `Block.jsx`, `ChartParts.jsx` – shared section wrapper (`.block > .block_inner`, `data-nav` label feeds SlideNav), titles, legends, source/note.
 * One file per chart/section: `OilChart`, `FuelsChart`, `MapScrolly` (scrolly steps) with `FuelMap` (official UN map: Highcharts + map-tools; only economies above the 20% threshold are highlighted), `TornadoChart` (vulnerable economies), `TankChart` (cost of a tank), `GapChart` (inflation), `GlobeTrio` (regional inflation), `TagsChart` (households), `KeyConsiderations`, `Intro`, `Statement` (`PumpStatement`, `CostStatement`).
-* `Sprite.jsx` + `sprite.svg` – inline SVG symbols; must be in the same document because `url(#hz-hatch-yellow)` and `<use href="#ic-*">` need local ids.
+* `Sprite.jsx` + `sprite.svg` – inline SVG symbols; must be in the same document because `url(#fp-hatch-yellow)` and `<use href="#ic-*">` need local ids.
 * `FuelPrices.css` – all section styles (scoped under `#app-root-2026-sohd_fuel_prices .app`). `Header/Footer/SlideNav` `.jsx/.css` – adapted from the storyboard.
 * `src/jsx/App.css` – `:root` extras and the `.fp_container` moire/gradient background.
 * Data: `public/assets/data/2026-sohd_fuel_prices_data.json`. Images: `public/assets/img/2026-sohd_fuel_prices_{main,guterres,unctad_logo_white,unctad_logo_black}`.
 
 ## Gotchas
-* `.app h3/h4/p` base styles from general-tools are neutralised by `.hz_block :where(h2,h3,h4,p,figure,blockquote){max-width:none;padding:0}`.
+* `.app h3/h4/p` base styles from general-tools are neutralised by `.block :where(h2,h3,h4,p,figure,blockquote){max-width:none;padding:0}`.
 * Hero/footer background images are passed as CSS variables with an absolute URL (`new URL(..., document.baseURI)`), otherwise the relative `url()` resolves against the stylesheet and the image 404s.
 * `Header.jsx` also hosts the `#hero-photo-grade` SVG filter used by `Footer.css`.
-* No `!important` anywhere: the reduced-motion block in `FuelPrices.css` uses `&&` (doubled parent selector) to out-rank the section rules; the diesel icon flip is the `.hz_flip` utility class; keep descending-specificity clean by ordering rules from low to high specificity.
+* No `!important` anywhere: the reduced-motion block in `FuelPrices.css` uses `&&` (doubled parent selector) to out-rank the section rules; the diesel icon flip is the `.flip` utility class; keep descending-specificity clean by ordering rules from low to high specificity.
 * Verifying with headless Chrome: `--virtual-time-budget` stalls IntersectionObserver reveals, so use real-time scrolling (CDP) to judge animations.
 
 ## Commands
 `npm run start` (dev server, port 8080, assume running), `npm run build`, `npm run format`, `npx biome check src`.
 
 ## TODO
-* Replace placeholder URLs in `src/meta.json` (copied from the storyboard) with the real report PDF, publication and "more reports" URLs.
+* `src/meta.json`: report PDF and publication URLs are set; replace the "more reports" URL (`more_reports_url`, still copied from the storyboard) with the real listing.
 * Check copy and data against the final report; check mobile (390px) title area of the header and nav-dot contrast over tinted blocks.
 
 ## Rules for this project
 * No em dashes in text; use en dashes.
 * Do not start the dev server (assume localhost:8080 is running); for checks use a temporary `vite preview` and kill it afterwards.
 * Commits: no AI co-author trailer; commit to the current branch and push to every remote (`origin` and `unctad`), preferably `npm run push`.
+* CSS class names have no project prefix; every rule lives under `#app-root-2026-sohd_fuel_prices .app` (no `:root`, `html` or `body` rules) and DOM queries in JS start at that root. Only names that are global by nature carry the `fp-` prefix: `@keyframes`, SVG ids and custom properties (`--fp-*`). The chart title block is `chart_header*` because `header_*` belongs to the hero.
 * Reuse storyboard/general-tools components before writing new ones; scope CSS under `#app-root-2026-sohd_fuel_prices .app`; CSS properties alphabetical, nested rules; use `--un-*` tokens only.
 * Source lines start with "UN Trade and Development (UNCTAD)".
 * Chart subtitles end with a full stop (the titles do). Axis labels use `--un-color-grey-darkest`; x-axis years are bold. The conflict annotation text comes from `conflictLabel` in `helpers.js`.

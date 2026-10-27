@@ -1,5 +1,6 @@
 import ButtonShare from '@unctad-infovis/general-tools/components/ButtonShare.jsx';
 import basePath from '@unctad-infovis/general-tools/helpers/BasePath.js';
+import { isStill } from './helpers.js';
 import './Header.css';
 
 export default function Header({ full_report_url, subtitle, title, url }) {
@@ -7,7 +8,7 @@ export default function Header({ full_report_url, subtitle, title, url }) {
     const start = window.scrollY;
     const dist = Math.round(window.innerHeight) - start + 50;
     if (!dist) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (isStill()) {
       window.scrollTo(0, start + dist);
       return;
     }

@@ -9,7 +9,6 @@ export const easeOut4 = t => 1 - (1 - t) ** 4;
 export const easeInOut = d3.easeQuadInOut;
 export const fmtInt = v => Math.round(v).toLocaleString('en-US').replace(/,/g, ' ');
 export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-export const color = name => `var(--un-color-${name})`;
 export const isStill = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 /** Resolved value of a --un-color-* design token (Highcharts needs real colour strings, not var()). */
 export const tokenColor = name => getComputedStyle(document.documentElement).getPropertyValue(`--un-color-${name}`).trim();
@@ -61,7 +60,7 @@ export const CONFLICT_LABEL_NARROW = ['Start of the', 'Middle East conflict,', '
 
 /** Conflict annotation shared by the line charts: right-aligned text to the left of the conflict line, one tspan per line. */
 export function conflictLabel(parent, lines, x, y) {
-  const text = parent.append('text').attr('class', 'hz_conflict_label').attr('text-anchor', 'end').attr('y', y);
+  const text = parent.append('text').attr('class', 'conflict_label').attr('text-anchor', 'end').attr('y', y);
   for (const [j, l] of lines.entries())
     text
       .append('tspan')
@@ -69,6 +68,52 @@ export function conflictLabel(parent, lines, x, y) {
       .attr('dy', j ? 16 : 0)
       .text(l);
   return text;
+}
+
+/** Dotted horizontal grid lines with their value label above the left end. ticks: [{ label, ref, v }]; ref marks the reference line (oil chart). */
+export function drawGrid(svg, y, x2, ticks) {
+  const grid = svg.append('g').attr('class', 'grid');
+  for (const { label, ref, v } of ticks) {
+    grid
+      .append('line')
+      .attr('class', ref ? 'oil_ref' : null)
+      .attr('x1', 0)
+      .attr('x2', x2)
+      .attr('y1', y(v))
+      .attr('y2', y(v));
+    grid
+      .append('text')
+      .attr('class', ref ? 'oil_ref_label' : null)
+      .attr('x', 0)
+      .attr('y', y(v) - 6)
+      .text(label ?? v);
+  }
+}
+
+/** Baseline at y0 with a tick, a label and an optional bold year line under it. ticks: [{ label, x, year }] */
+export function drawAxis(svg, y0, x2, ticks) {
+  const ax = svg.append('g').attr('class', 'axis');
+  ax.append('line').attr('class', 'axis_base').attr('x1', 0).attr('x2', x2).attr('y1', y0).attr('y2', y0);
+  for (const { label, x, year } of ticks) {
+    ax.append('line')
+      .attr('class', 'axis_tick')
+      .attr('x1', x)
+      .attr('x2', x)
+      .attr('y1', y0)
+      .attr('y2', y0 + 5);
+    ax.append('text')
+      .attr('x', x)
+      .attr('y', y0 + 20)
+      .attr('text-anchor', 'middle')
+      .text(label);
+    if (year)
+      ax.append('text')
+        .attr('class', 'axis_year')
+        .attr('x', x)
+        .attr('y', y0 + 36)
+        .attr('text-anchor', 'middle')
+        .text(year);
+  }
 }
 
 export function svgFor(el, W, H, label) {

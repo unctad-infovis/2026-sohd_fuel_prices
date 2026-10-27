@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { useCallback, useEffect, useRef } from 'react';
 import Block from './Block.jsx';
 import { Accent, ChartHeader, ChartMeta } from './ChartParts.jsx';
-import { CONFLICT, CONFLICT_LABEL, CONFLICT_LABEL_NARROW, conflictLabel, easeInOut, onceVisible, svgFor, tokPx, tween, useFuelData, useWidthRedraw } from './helpers.js';
+import { CONFLICT, CONFLICT_LABEL, CONFLICT_LABEL_NARROW, conflictLabel, drawAxis, drawGrid, easeInOut, onceVisible, svgFor, tokPx, tween, useFuelData, useWidthRedraw } from './helpers.js';
 
 export default function OilChart() {
   const payload = useFuelData();
@@ -25,7 +25,7 @@ export default function OilChart() {
     const mou0 = Date.UTC(2026, 5, 15);
     const mou1 = Date.UTC(2026, 6, 6);
     const svg = svgFor(el, W, H, 'Daily crude oil price, average of four regional prices, September 2025 to October 2026');
-    const clipId = 'hz-oil-clip';
+    const clipId = 'fp-oil-clip';
     const clip = svg.append('defs').append('clipPath').attr('id', clipId).append('rect').attr('x', 0).attr('y', 0).attr('height', H).attr('width', m.l);
     svg
       .append('rect')
@@ -34,62 +34,25 @@ export default function OilChart() {
       .attr('y', m.t)
       .attr('width', x(mou1) - x(mou0))
       .attr('height', H - m.t - m.b)
-      .style('fill', 'url(#hz-hatch-yellow)');
+      .style('fill', 'url(#fp-hatch-yellow)');
     // Grid only at 50 and 100; 100 is the dotted reference
-    const grid = svg.append('g').attr('class', 'hz_grid');
-    for (const v of [50, 100]) {
-      grid
-        .append('line')
-        .attr('class', v === 100 ? 'hz_oil_ref' : null)
-        .attr('x1', 0)
-        .attr('x2', W - m.r)
-        .attr('y1', y(v))
-        .attr('y2', y(v));
-      grid
-        .append('text')
-        .attr('class', v === 100 ? 'hz_oil_ref_label' : null)
-        .attr('x', 0)
-        .attr('y', y(v) - 6)
-        .text(v === 100 ? '$100' : v);
-    }
-    const ax = svg.append('g').attr('class', 'hz_axis');
-    ax.append('line')
-      .attr('class', 'hz_axis_base')
-      .attr('x1', 0)
-      .attr('x2', W - m.r)
-      .attr('y1', y(0))
-      .attr('y2', y(0));
-    for (const a of [
-      [2025, 8, 'Sep', '2025'],
-      [2025, 11, 'Dec'],
-      [2026, 2, 'Mar', '2026'],
-      [2026, 5, 'Jun'],
-      [2026, 8, 'Sep']
-    ]) {
-      const xx = x(Date.UTC(a[0], a[1], 1));
-      ax.append('line')
-        .attr('class', 'hz_axis_tick')
-        .attr('x1', xx)
-        .attr('x2', xx)
-        .attr('y1', y(0))
-        .attr('y2', y(0) + 5);
-      ax.append('text')
-        .attr('x', xx)
-        .attr('y', y(0) + 20)
-        .attr('text-anchor', 'middle')
-        .text(a[2]);
-      if (a[3])
-        ax.append('text')
-          .attr('class', 'hz_axis_year')
-          .attr('x', xx)
-          .attr('y', y(0) + 36)
-          .attr('text-anchor', 'middle')
-          .text(a[3]);
-    }
+    drawGrid(svg, y, W - m.r, [{ v: 50 }, { label: '$100', ref: true, v: 100 }]);
+    drawAxis(
+      svg,
+      y(0),
+      W - m.r,
+      [
+        [2025, 8, 'Sep', '2025'],
+        [2025, 11, 'Dec'],
+        [2026, 2, 'Mar', '2026'],
+        [2026, 5, 'Jun'],
+        [2026, 8, 'Sep']
+      ].map(([yr, mo, label, year]) => ({ label, x: x(Date.UTC(yr, mo, 1)), year }))
+    );
     const cx = x(CONFLICT);
     svg
       .append('line')
-      .attr('class', 'hz_oil_conflict')
+      .attr('class', 'oil_conflict')
       .attr('data-ev', 'conflict')
       .attr('x1', cx)
       .attr('x2', cx)
@@ -123,7 +86,7 @@ export default function OilChart() {
     const ly = Math.min(y(0) - lh - 10, (y(lo) + y(0)) / 2 - lh / 2 + fs * 0.35);
     const ml = svg
       .append('text')
-      .attr('class', 'hz_oil_mou_label')
+      .attr('class', 'oil_mou_label')
       .attr('data-ev', 'mou')
       .attr('text-anchor', 'middle')
       .attr('y', ly)
@@ -132,7 +95,7 @@ export default function OilChart() {
     ml.append('tspan').attr('x', mx).attr('dy', lh).text('MoU');
     svg
       .append('path')
-      .attr('class', 'hz_oil_line')
+      .attr('class', 'oil_line')
       .attr('clip-path', `url(#${clipId})`)
       .attr(
         'd',
@@ -142,21 +105,21 @@ export default function OilChart() {
           .y(v => y(v))(o.a)
       );
     const sp = svg.append('g').attr('data-ev', 'start');
-    sp.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', x(T[0])).attr('cy', y(o.a[0])).attr('r', 5);
+    sp.append('circle').attr('class', 'point point--blue').attr('cx', x(T[0])).attr('cy', y(o.a[0])).attr('r', 5);
     sp.append('text')
-      .attr('class', 'hz_value hz_value--blue')
+      .attr('class', 'value value--blue')
       .attr('x', x(T[0]))
       .attr('y', y(o.a[0]) - 14)
       .attr('text-anchor', 'middle')
       .text(Math.round(o.a[0]));
     const ep = svg.append('g').attr('data-ev', 'end');
     ep.append('circle')
-      .attr('class', 'hz_point hz_point--blue')
+      .attr('class', 'point point--blue')
       .attr('cx', x(T[n - 1]))
       .attr('cy', y(o.a[n - 1]))
       .attr('r', 5);
     ep.append('text')
-      .attr('class', 'hz_value hz_value--blue')
+      .attr('class', 'value value--blue')
       .attr('x', x(T[n - 1]) + 12)
       .attr('y', y(o.a[n - 1]) + 6)
       .text(Math.round(o.a[n - 1]));
@@ -164,14 +127,14 @@ export default function OilChart() {
     const kMax = d3.maxIndex(o.a);
     const xPeak = x(T[kMax]);
     const pg = svg.append('g').attr('data-ev', 'peak');
-    pg.append('circle').attr('class', 'hz_point hz_point--blue').attr('cx', xPeak).attr('cy', y(o.a[kMax])).attr('r', 5);
+    pg.append('circle').attr('class', 'point point--blue').attr('cx', xPeak).attr('cy', y(o.a[kMax])).attr('r', 5);
     pg.append('text')
-      .attr('class', 'hz_value hz_value--blue')
+      .attr('class', 'value value--blue')
       .attr('x', xPeak)
       .attr('y', y(o.a[kMax]) - 14)
       .attr('text-anchor', 'middle')
       .text(Math.round(o.a[kMax]));
-    const head = svg.append('circle').attr('class', 'hz_oil_head').attr('r', 5.5).attr('cx', -20).attr('cy', -20);
+    const head = svg.append('circle').attr('class', 'oil_head').attr('r', 5.5).attr('cx', -20).attr('cy', -20);
     // Sequence: conflict, MoU, today (the line passes the highest price without stopping)
     const stops = [
       { dur: 1100, evs: ['burst', 'conflict'], pause: 1100, x: CONFLICT },
@@ -251,7 +214,7 @@ export default function OilChart() {
   useWidthRedraw(draw, !!payload);
 
   return (
-    <Block id="hz-oil" nav="Oil prices" tinted>
+    <Block id="fp-oil" nav="Oil prices" tinted>
       <ChartHeader
         icon="ic-barrel"
         subtitle="Daily price of crude oil in US dollars per barrel, average of four regional prices."
@@ -261,7 +224,7 @@ export default function OilChart() {
           </>
         }
       />
-      <figure className="hz_chart" ref={chartRef} />
+      <figure className="chart" ref={chartRef} />
       <ChartMeta
         note="Prices between 1 September 2025 and 19 October 2026. Average based on Brent (Europe), WTI (Northern America), Dubai (Middle East), Urals (Russian Federation). All four regional prices surpassed US$ 100 on 10 September 2026. Islamabad MoU: Islamabad Memorandum of Understanding."
         source="UN Trade and Development (UNCTAD), based on LSEG Datastream."

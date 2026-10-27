@@ -31,7 +31,7 @@ export default function TagsChart() {
       .select(el)
       .html('')
       .append('svg')
-      .attr('class', 'hz_tags')
+      .attr('class', 'tags')
       .attr('viewBox', `80 ${narrow ? 348 : 390} 1040 ${narrow ? 492 : 450}`)
       .attr('role', 'img')
       .attr('aria-label', `Additional inflation faced by the poorest households: advanced economies ${p.adv} points, developing countries ${p.dev} points, low-income developing countries ${p.lidc} points`);
@@ -39,7 +39,7 @@ export default function TagsChart() {
       const fs = 22 * k;
       const t = svg
         .append('text')
-        .attr('class', `hz_tags_group hz_tags_group--${it.cls}`)
+        .attr('class', `tags_group tags_group--${it.cls}`)
         .attr('text-anchor', 'middle')
         .attr('font-size', fs)
         .style('transition-delay', `${0.1 + i * 0.12}s`);
@@ -52,9 +52,9 @@ export default function TagsChart() {
         .attr('dy', fs * 1.18)
         .text(it.l[1]);
     }
-    svg.append('line').attr('class', 'hz_tags_rail').attr('x1', x0).attr('y1', RY).attr('x2', x1).attr('y2', RY).attr('stroke-dasharray', L).attr('stroke-dashoffset', L).style('transition-delay', '.35s');
-    svg.append('circle').attr('class', 'hz_tags_end').attr('cx', x0).attr('cy', RY).attr('r', 9).style('transition-delay', '.4s');
-    svg.append('circle').attr('class', 'hz_tags_end').attr('cx', x1).attr('cy', RY).attr('r', 9).style('transition-delay', '1.25s');
+    svg.append('line').attr('class', 'tags_rail').attr('x1', x0).attr('y1', RY).attr('x2', x1).attr('y2', RY).attr('stroke-dasharray', L).attr('stroke-dashoffset', L).style('transition-delay', '.35s');
+    svg.append('circle').attr('class', 'tags_end').attr('cx', x0).attr('cy', RY).attr('r', 9).style('transition-delay', '.4s');
+    svg.append('circle').attr('class', 'tags_end').attr('cx', x1).attr('cy', RY).attr('r', 9).style('transition-delay', '1.25s');
     for (const [i, it] of items.entries()) {
       const r = Math.sqrt(it.v);
       const w = 131 * r;
@@ -67,7 +67,7 @@ export default function TagsChart() {
       for (const dx of [-16, 16])
         svg
           .append('line')
-          .attr('class', 'hz_tags_string')
+          .attr('class', 'tags_string')
           .attr('x1', cx + dx)
           .attr('y1', RY)
           .attr('x2', cx)
@@ -84,13 +84,13 @@ export default function TagsChart() {
       const vfs = Math.round(40 + 16 * r);
       const g = svg
         .append('g')
-        .attr('class', `hz_tags_tag hz_tags_tag--${it.cls}`)
+        .attr('class', `tags_tag tags_tag--${it.cls}`)
         .style('transform-origin', `${cx}px ${hy}px`)
         .style('animation-delay', `${d0 + 0.35}s`);
-      g.append('path').attr('class', 'hz_tags_shape').attr('d', shape);
-      g.append('circle').attr('class', 'hz_tags_hole').attr('cx', cx).attr('cy', hy).attr('r', 11);
+      g.append('path').attr('class', 'tags_shape').attr('d', shape);
+      g.append('circle').attr('class', 'tags_hole').attr('cx', cx).attr('cy', hy).attr('r', 11);
       g.append('text')
-        .attr('class', 'hz_tags_value')
+        .attr('class', 'tags_value')
         .attr('data-v', it.v)
         .attr('data-d', d0 + 0.6)
         .attr('x', cx)
@@ -99,7 +99,7 @@ export default function TagsChart() {
         .attr('font-size', vfs)
         .text(TAGS.played ? `+${it.v.toFixed(1)}` : '+0.0');
       g.append('text')
-        .attr('class', 'hz_tags_unit')
+        .attr('class', 'tags_unit')
         .attr('x', cx)
         .attr('y', vy + 22 * k + 4)
         .attr('text-anchor', 'middle')
@@ -114,7 +114,7 @@ export default function TagsChart() {
       TAGS.played = true;
       svg.classed('is-playing', true);
       if (instant) svg.classed('is-static', true);
-      svg.selectAll('.hz_tags_value').each(function () {
+      svg.selectAll('.tags_value').each(function () {
         const t = d3.select(this);
         const to = Number(t.attr('data-v'));
         if (instant) {
@@ -136,7 +136,7 @@ export default function TagsChart() {
   useWidthRedraw(draw, !!payload);
 
   return (
-    <Block id="hz-households" nav="Households" tinted>
+    <Block id="fp-households" nav="Households" tinted>
       <ChartHeader
         subtitle="Additional inflation faced by poorest compared to richest households per country group, in percentage points."
         title={
@@ -145,9 +145,9 @@ export default function TagsChart() {
           </>
         }
       />
-      <p className="hz_insight">Poorer households face much higher inflation than wealthier households during cost-of-living crises, because they spend more of their income on food and energy.</p>
-      <p className="hz_caption">Baseline (0) = the inflation faced by the highest-income households</p>
-      <figure className="hz_chart" ref={chartRef} />
+      <p className="insight">Poorer households face much higher inflation than wealthier households during cost-of-living crises, because they spend more of their income on food and energy.</p>
+      <p className="caption">Baseline (0) = the inflation faced by the highest-income households</p>
+      <figure className="chart" ref={chartRef} />
       <ChartMeta
         note={
           'Cost-of-living crises were defined as periods where prices rise faster for basic necessities than for other goods and services and nominal wage growth. Poorest and richest households are those in the bottom 20% and top 20% of the income distribution, respectively. Median values for each country group. Developing countries include "emerging market economies" and exclude low-income developing countries.'

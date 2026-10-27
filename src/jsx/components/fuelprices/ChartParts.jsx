@@ -1,11 +1,11 @@
 export function ChartHeader({ icon, subtitle, title }) {
   return (
-    <div className="hz_header">
-      <h3 className="hz_header_title">{title}</h3>
+    <div className="chart_header">
+      <h3 className="chart_header_title">{title}</h3>
       {subtitle && (
-        <h4 className={`hz_header_subtitle${icon ? ' hz_header_subtitle--icon' : ''}`}>
+        <h4 className={`chart_header_subtitle${icon ? ' chart_header_subtitle--icon' : ''}`}>
           {icon && (
-            <svg aria-hidden="true" className="hz_header_icon">
+            <svg aria-hidden="true" className="chart_header_icon">
               <use href={`#${icon}`} />
             </svg>
           )}
@@ -17,17 +17,17 @@ export function ChartHeader({ icon, subtitle, title }) {
 }
 
 export function Accent({ children, yellow }) {
-  return <span className={`hz_header_accent${yellow ? ' hz_header_accent--yellow' : ''}`}>{children}</span>;
+  return <span className={`chart_header_accent${yellow ? ' chart_header_accent--yellow' : ''}`}>{children}</span>;
 }
 
 export function ChartMeta({ children, note, source }) {
   return (
-    <div className="hz_meta">
-      <p className="hz_meta_row">
+    <div className="meta">
+      <p className="meta_row">
         <em>Source:</em> {source}
       </p>
       {note && (
-        <p className="hz_meta_row">
+        <p className="meta_row">
           <em>Note:</em> {note}
         </p>
       )}
@@ -38,10 +38,10 @@ export function ChartMeta({ children, note, source }) {
 
 export function Legend({ items }) {
   return (
-    <ul className="hz_legend">
+    <ul className="legend">
       {items.map(item => (
-        <li className="hz_legend_item" key={item.label}>
-          <span className={`hz_legend_key${item.line ? ` ${item.line}` : ''}`} />
+        <li className="legend_item" key={item.label}>
+          <span className={`legend_key${item.line ? ` ${item.line}` : ''}`} />
           {item.label}
         </li>
       ))}
@@ -49,4 +49,4 @@ export function Legend({ items }) {
   );
 }
 
-export const HATCH_LEGEND = { label: 'Middle East conflict', line: 'hz_legend_key--hatch' };
+export const HATCH_LEGEND = { label: 'Middle East conflict', line: 'legend_key--hatch' };
