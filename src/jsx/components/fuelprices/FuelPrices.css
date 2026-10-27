@@ -670,6 +670,7 @@
       transform: none;
     }
     .maps_fuel {
+      --fp-icon: 30px;
       align-items: center;
       color: var(--un-color-grey-darkest);
       display: flex;
@@ -681,8 +682,13 @@
       text-transform: uppercase;
       svg {
         color: var(--un-color-grey-darkest);
-        height: 30px;
-        width: 30px;
+        height: var(--fp-icon);
+        /* The car and truck glyphs sit low in their icon box; nudged up (translate, so the .flip transform stays) to share the label's centre line */
+        translate: 0 calc(var(--fp-icon) * -0.085);
+        width: var(--fp-icon);
+        &.flip {
+          translate: 0 calc(var(--fp-icon) * -0.055);
+        }
       }
     }
     .maps_big {
