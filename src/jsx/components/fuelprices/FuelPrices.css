@@ -1300,12 +1300,10 @@
     }
     .key_icon {
       align-items: center;
-      background: #fff;
+      background: var(--un-color-yellow);
       border-radius: 50%;
-      box-shadow:
-        0 0 0 1px var(--un-color-grey-light),
-        0 6px 18px color-mix(in srgb, var(--un-color-blue-darkest) 8%, transparent);
-      color: var(--un-color-blue);
+      box-shadow: 0 6px 18px color-mix(in srgb, var(--un-color-yellow-darkest) 18%, transparent);
+      color: #fff;
       display: flex;
       height: 80px;
       justify-content: center;
