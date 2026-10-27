@@ -141,7 +141,7 @@ export default function TagsChart() {
         subtitle="Additional inflation faced by poorest compared to richest households per country group, in percentage points."
         title={
           <>
-            Cost-of-living crises hit <Accent yellow>poorer households</Accent> hardest.
+            Cost-of-living crises hit <Accent>poorer households</Accent> hardest.
           </>
         }
       />
