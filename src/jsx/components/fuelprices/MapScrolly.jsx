@@ -120,16 +120,17 @@ export default function MapScrolly() {
         </div>
       </div>
       <ChartMeta
-        note={`Change of average local prices at the pump since the start of the Middle East conflict until 19 October 2026, compared to the six months before the conflict (weekly, 1 September 2025 – 23 February 2026). Computations for ${stats ? fmtInt(stats[mode].n) : ''} economies, based on prices in local currencies.`}
+        note={
+          <>
+            Change of average local prices at the pump since the start of the Middle East conflict until 19 October 2026, compared to the six months before the conflict (weekly, 1 September 2025 – 23 February 2026). Computations for {stats ? fmtInt(stats[mode].n) : ''} economies, based on prices in local currencies.{' '}
+            <a href="https://unctad.org/map-disclaimer" rel="noopener" target="_blank">
+              Map disclaimer
+            </a>
+            .
+          </>
+        }
         source="UN Trade and Development (UNCTAD), based on Global Petrol Prices and national sources."
-      >
-        <p className="meta_row meta_row--disclaimer">
-          The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations. Please see:{' '}
-          <a href="https://unctad.org/map-disclaimer" rel="noopener" target="_blank">
-            unctad.org/map-disclaimer
-          </a>
-        </p>
-      </ChartMeta>
+      />
     </Block>
   );
 }

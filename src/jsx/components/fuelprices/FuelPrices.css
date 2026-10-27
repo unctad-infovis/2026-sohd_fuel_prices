@@ -246,9 +246,6 @@
           border-bottom: 0;
         }
       }
-      &.meta_row--disclaimer {
-        font-size: var(--un-font-size-xxxs);
-      }
     }
   }
   .chart {
