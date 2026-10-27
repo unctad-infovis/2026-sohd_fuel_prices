@@ -25,6 +25,13 @@ function setChinaHover(point, state) {
   }
 }
 
+/** Border lines between economies; map-tools draws them white, here they are light grey. */
+const borderSeries = (name, objectName, dash, topology) => {
+  const series = createMaplineSeries(name, processTopoObject(topology, objectName), dash);
+  series.mapData = series.mapData.map(border => ({ ...border, color: tokenColor('grey-light') }));
+  return series;
+};
+
 /** Hatched fill for economies without data, so it can never be mistaken for a data class. */
 const noDataFill = () => ({
   pattern: {
@@ -63,7 +70,7 @@ export default function FuelMap({ foundCode, mode, rows, topology }) {
         region.properties.value = own ? own.value : null;
         const isFound = code === foundRef.current;
         return {
-          borderColor: tokenColor('grey-darkest'),
+          borderColor: '#fff',
           borderWidth: isFound ? 1.8 : 0,
           code,
           color: getColor(region.properties, data, CHINA_AREAS, colorFromValue),
@@ -104,13 +111,13 @@ export default function FuelMap({ foundCode, mode, rows, topology }) {
               }
             }
           },
-          states: { hover: { borderColor: tokenColor('grey-darkest'), borderWidth: 1.5 }, inactive: { enabled: false } },
+          states: { hover: { borderColor: '#fff', borderWidth: 1.8 }, inactive: { enabled: false } },
           type: 'map'
         },
-        createMaplineSeries('dash_borders', processTopoObject(topology, 'dashed-borders'), 'Dash'),
-        createMaplineSeries('dot_borders', processTopoObject(topology, 'dotted-borders'), 'Dot'),
-        createMaplineSeries('dash_dot_borders', processTopoObject(topology, 'plain-borders'), 'DashDot'),
-        createMaplineSeries('solid_borders', processTopoObject(topology, 'plain-borders'), 'Solid')
+        borderSeries('dash_borders', 'dashed-borders', 'Dash', topology),
+        borderSeries('dot_borders', 'dotted-borders', 'Dot', topology),
+        borderSeries('dash_dot_borders', 'plain-borders', 'DashDot', topology),
+        borderSeries('solid_borders', 'plain-borders', 'Solid', topology)
       ],
       subtitle: { text: null },
       title: { text: null },
