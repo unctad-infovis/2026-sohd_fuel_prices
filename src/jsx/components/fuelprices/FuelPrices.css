@@ -1412,6 +1412,8 @@
       }
     }
     .quote_text {
+      /* The host site sets its own colour on blockquote, figcaption and strong, so inheriting white from the block is not enough */
+      color: #fff;
       font-size: clamp(var(--un-font-size-xl), 3.8vw, calc(var(--un-font-size-xxxl) * 1.15));
       font-weight: var(--un-font-weight-bold);
       letter-spacing: -0.02em;
@@ -1434,11 +1436,13 @@
       }
     }
     .quote_caption {
+      color: #fff;
       font-size: var(--un-font-size-xxs);
       margin-top: 28px;
       opacity: 0.85;
     }
     .quote_name {
+      color: #fff;
       display: block;
       font-size: var(--un-font-size-xs);
       font-weight: var(--un-font-weight-bolder);
