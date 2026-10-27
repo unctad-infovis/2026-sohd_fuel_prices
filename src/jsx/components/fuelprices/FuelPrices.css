@@ -1172,20 +1172,13 @@
   }
   .tags {
     .tags_group {
-      fill: var(--un-color-grey-darkest);
+      fill: var(--un-color-blue-darkest);
       font-weight: var(--un-font-weight-bolder);
       opacity: 0;
       transform: translateY(8px);
       transition:
         opacity 0.6s ease,
         transform 0.7s var(--fp-ease);
-    }
-    .tags_group--adv {
-      fill: var(--un-color-blue-text-dark);
-    }
-    .tags_group--dev,
-    .tags_group--low {
-      fill: var(--un-color-yellow-darkest);
     }
     .tags_rail {
       stroke: var(--un-color-grey);
@@ -1211,16 +1204,16 @@
       fill: color-mix(in srgb, var(--un-color-blue-lightest) 45%, #fff);
     }
     .tags_tag--adv {
+      --fp-tag: var(--un-color-blue-light);
+      --fp-tag-text: var(--un-color-grey-darkest);
+    }
+    .tags_tag--dev {
       --fp-tag: var(--un-color-blue);
       --fp-tag-text: #fff;
     }
-    .tags_tag--dev {
-      --fp-tag: var(--un-color-yellow-darkest);
-      --fp-tag-text: #fff;
-    }
     .tags_tag--low {
-      --fp-tag: var(--un-color-yellow);
-      --fp-tag-text: var(--un-color-grey-darkest);
+      --fp-tag: var(--un-color-blue-darkest);
+      --fp-tag-text: #fff;
     }
     .tags_shape {
       fill: var(--fp-tag);

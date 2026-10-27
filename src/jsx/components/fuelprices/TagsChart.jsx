@@ -39,7 +39,7 @@ export default function TagsChart() {
       const fs = 22 * k;
       const t = svg
         .append('text')
-        .attr('class', `tags_group tags_group--${it.cls}`)
+        .attr('class', 'tags_group')
         .attr('text-anchor', 'middle')
         .attr('font-size', fs)
         .style('transition-delay', `${0.1 + i * 0.12}s`);
