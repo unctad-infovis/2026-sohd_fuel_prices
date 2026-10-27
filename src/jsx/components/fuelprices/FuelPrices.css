@@ -62,18 +62,26 @@
   --fp-stripe: color-mix(in srgb, var(--un-color-blue-dark) 5%, transparent);
   --fp-stripe2: color-mix(in srgb, var(--un-color-blue-darkest) 4%, transparent);
   --fp-tint: color-mix(in srgb, color-mix(in srgb, var(--un-color-blue-lightest) 50%, #fff) 82%, transparent);
-  background-attachment: fixed;
   background-color: #fff;
-  background-image:
-    var(--fp-moire), radial-gradient(ellipse 95% 70% at 50% -5%, color-mix(in srgb, var(--un-color-blue-lightest) 50%, transparent) 0%, transparent 72%), radial-gradient(ellipse 85% 65% at 50% 105%, color-mix(in srgb, var(--un-color-blue-lightest) 40%, transparent) 0%, transparent 65%),
-    linear-gradient(180deg, color-mix(in srgb, var(--un-color-blue-lightest) 35%, #fff) 0%, color-mix(in srgb, var(--un-color-blue-lightest) 15%, #fff) 50%, #fff 100%);
   color: var(--un-color-grey-darkest);
   font-family: var(--fp-font);
   font-size: var(--un-font-size-normal);
   -webkit-font-smoothing: antialiased;
+  isolation: isolate;
   line-height: var(--un-line-height-normal);
   overflow-x: clip;
   position: relative;
+  /* Page background in two viewport-sized layers behind the content, position: fixed (not background-attachment: fixed, which Safari drops on very tall elements and iOS ignores; and not one page-tall element, whose repeating lines drift out of phase into visible bands) */
+  &::before {
+    background-image:
+      var(--fp-moire), radial-gradient(ellipse 95% 70% at 50% -5%, color-mix(in srgb, var(--un-color-blue-lightest) 50%, transparent) 0%, transparent 72%), radial-gradient(ellipse 85% 65% at 50% 105%, color-mix(in srgb, var(--un-color-blue-lightest) 40%, transparent) 0%, transparent 65%),
+      linear-gradient(180deg, color-mix(in srgb, var(--un-color-blue-lightest) 35%, #fff) 0%, color-mix(in srgb, var(--un-color-blue-lightest) 15%, #fff) 50%, #fff 100%);
+    content: '';
+    inset: 0;
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+  }
   *,
   *::before,
   *::after {
@@ -122,7 +130,6 @@
     position: relative;
   }
   .block--tinted {
-    background-attachment: fixed;
     background-color: var(--fp-tint);
     background-image: var(--fp-moire);
   }
