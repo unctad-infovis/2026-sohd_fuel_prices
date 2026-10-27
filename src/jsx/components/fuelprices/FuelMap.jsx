@@ -17,6 +17,14 @@ const CHINA_AREAS = ['156', '158', '344', '446'];
 const BORROWS = { 156: '156', 158: '156', 344: '156', 412: '688', 446: '156', C00003: '356' };
 const FUEL_NAME = { d: 'Diesel', g: 'Gasoline' };
 
+/** Hover or release the hover state of every other area of China, so China, Taiwan, Hong Kong and Macao light up together. */
+function setChinaHover(point, state) {
+  if (!CHINA_AREAS.includes(point.options.code)) return;
+  for (const p of point.series.points) {
+    if (p !== point && CHINA_AREAS.includes(p.options.code)) p.setState(state);
+  }
+}
+
 /** Hatched fill for economies without data, so it can never be mistaken for a data class. */
 const noDataFill = () => ({
   pattern: {
@@ -60,7 +68,8 @@ export default function FuelMap({ foundCode, mode, rows, topology }) {
           code,
           color: getColor(region.properties, data, CHINA_AREAS, colorFromValue),
           id: code,
-          name: labelen,
+          // The data is for all of China, so every area shows the same name
+          name: CHINA_AREAS.includes(code) ? 'China' : labelen,
           // 0 is a real value, so no `||` fallback
           value: code === 'C00002' ? null : (source?.value ?? null)
         };
@@ -85,6 +94,16 @@ export default function FuelMap({ foundCode, mode, rows, topology }) {
           mapData: processTopoObjectPolygons(topology, 'economies-color'),
           name: 'economies_color',
           nullColor: tokenColor('grey-light'),
+          point: {
+            events: {
+              mouseOut() {
+                setChinaHover(this, '');
+              },
+              mouseOver() {
+                setChinaHover(this, 'hover');
+              }
+            }
+          },
           states: { hover: { borderColor: tokenColor('grey-darkest'), borderWidth: 1.5 }, inactive: { enabled: false } },
           type: 'map'
         },

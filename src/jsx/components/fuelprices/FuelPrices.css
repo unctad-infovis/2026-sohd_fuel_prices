@@ -607,7 +607,7 @@
       width: 14px;
     }
     .classes_key--none {
-      background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--un-color-grey) 15%, var(--un-color-grey-light)) 0 1px, #fff 1px 4px);
+      background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--un-color-grey-light) 50%, var(--un-color-grey-lightest)) 0 1px, #fff 1px 4px);
     }
   }
   .block--map-scrolly {
@@ -1378,6 +1378,14 @@
       @media (max-width: 600px) {
         font-size: var(--un-font-size-xs);
       }
+      a {
+        color: var(--un-color-blue-darkest);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        &:hover {
+          color: var(--un-color-blue);
+        }
+      }
       strong {
         color: var(--un-color-blue-darkest);
         font-weight: var(--un-font-weight-bolder);
@@ -1496,6 +1504,10 @@
     }
   }
   .maps {
+    /* The tooltip text is light, so <b> (bolder than its parent) would only reach regular weight */
+    .maps_chart .highcharts-tooltip b {
+      font-weight: var(--un-font-weight-bolder);
+    }
     .maps_find {
       background: #fff;
       border: 1px solid color-mix(in srgb, var(--un-color-blue-darkest) 10%, transparent);
@@ -1675,7 +1687,7 @@
           width: 10px;
         }
         .maps_find_key--none {
-          background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--un-color-grey) 15%, var(--un-color-grey-light)) 0 1px, #fff 1px 3px);
+          background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--un-color-grey-light) 50%, var(--un-color-grey-lightest)) 0 1px, #fff 1px 3px);
         }
       }
     }

@@ -7,7 +7,7 @@ const Arrow = () => (
   </svg>
 );
 
-export default function Footer({ full_report_url, more_reports_url, tdr_url, world_of_debt_url }) {
+export default function Footer({ full_report_url, more_reports_url }) {
   return (
     <Block className="block--quote" id="fp-quote">
       <figure className="quote">
@@ -25,14 +25,6 @@ export default function Footer({ full_report_url, more_reports_url, tdr_url, wor
         </a>
         <a className="quote_more" href={more_reports_url} rel="noopener" target="_blank">
           More UNCTAD publications on the Strait of Hormuz
-          <Arrow />
-        </a>
-        <a className="quote_more" href={world_of_debt_url} rel="noopener" target="_blank">
-          Fiscal strains of debt-burdened economies
-          <Arrow />
-        </a>
-        <a className="quote_more" href={tdr_url} rel="noopener" target="_blank">
-          Slow down to 2.6% in 2026
           <Arrow />
         </a>
       </div>

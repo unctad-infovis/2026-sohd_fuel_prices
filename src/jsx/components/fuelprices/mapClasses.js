@@ -15,5 +15,5 @@ export const mapClasses = () => [
   { color: tokenColor('red'), hi: Number.POSITIVE_INFINITY, label: '>40%' }
 ];
 
-/** Stripe colour of the "no data" hatching, slightly lighter than the base grey. */
-export const noDataStripe = () => mix('grey', 'grey-light', 0.85);
+/** Stripe colour of the "no data" hatching: halfway between the two lightest greys, so it stays quiet next to the data classes. */
+export const noDataStripe = () => mix('grey-light', 'grey-lightest', 0.5);
