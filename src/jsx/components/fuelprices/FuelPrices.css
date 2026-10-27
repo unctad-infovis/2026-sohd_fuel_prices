@@ -165,6 +165,7 @@
     position: relative;
     .chart_header_title {
       color: #000;
+      font-weight: var(--un-font-weight-boldest);
       margin: 0 0 5px;
       max-width: 700px;
       padding: 0 0 0 45px;
