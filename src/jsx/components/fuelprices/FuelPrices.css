@@ -118,6 +118,21 @@
       transform: none;
     }
   }
+  /* Reading progress: sticks to the top of the viewport while the report content scrolls, takes no space in the flow */
+  .progress {
+    height: 3px;
+    margin-bottom: -3px;
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    .progress_bar {
+      background: var(--un-color-blue);
+      display: block;
+      height: 100%;
+      transition: width 0.12s linear;
+      width: 0;
+    }
+  }
   a {
     color: var(--un-color-blue-text-dark);
   }

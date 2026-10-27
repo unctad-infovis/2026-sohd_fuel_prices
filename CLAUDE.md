@@ -12,7 +12,7 @@ Read `README.md` first for the overview, status and content workflow; the file m
 * Charts: straight 5px lines, space as thousands separator, `prefers-reduced-motion` skips animations, responsive redraw on width change.
 
 ## Page structure (`src/Article.mdx`)
-`Header` then `<div className="fp_container">`: `Sprite`, `SlideNav`, `Intro`, `OilChart`, `FuelsChart`, `PumpStatement`, `MapScrolly`, `TornadoChart`, `CostStatement`, `TankChart`, `GapChart`, `GlobeTrio`, `TagsChart`, `KeyConsiderations`; then `Footer`. All are registered in `src/jsx/App.jsx`.
+`Header` then `<div className="fp_container">`: `Sprite`, `ProgressBar` (3px reading progress, sticky at the top of the viewport), `SlideNav`, `Intro`, `OilChart`, `FuelsChart`, `PumpStatement`, `MapScrolly`, `TornadoChart`, `CostStatement`, `TankChart`, `GapChart`, `GlobeTrio`, `TagsChart`, `KeyConsiderations`; then `Footer`. All are registered in `src/jsx/App.jsx`.
 
 ## Files (`src/jsx/components/fuelprices/`)
 * `helpers.js` – `useFuelData()` loads the single JSON once; `useWidthRedraw`, `onceVisible`, formatting helpers.

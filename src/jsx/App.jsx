@@ -9,6 +9,7 @@ import Intro from './components/fuelprices/Intro.jsx';
 import KeyConsiderations from './components/fuelprices/KeyConsiderations.jsx';
 import MapScrolly from './components/fuelprices/MapScrolly.jsx';
 import OilChart from './components/fuelprices/OilChart.jsx';
+import ProgressBar from './components/fuelprices/ProgressBar.jsx';
 import SlideNav from './components/fuelprices/SlideNav.jsx';
 import Sprite from './components/fuelprices/Sprite.jsx';
 import { CostStatement, PumpStatement } from './components/fuelprices/Statement.jsx';
@@ -31,6 +32,7 @@ const components = {
   KeyConsiderations,
   MapScrolly,
   OilChart,
+  ProgressBar,
   PumpStatement,
   SlideNav,
   Sprite,
