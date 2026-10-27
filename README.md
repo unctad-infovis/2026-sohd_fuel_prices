@@ -45,7 +45,7 @@ Run `npm run build` first. Then `npm run sync-gh-pages` (GitHub Pages, git subtr
 
 ## Used in
 
-* [Strait of Hormuz Disruptions: soaring fuel prices and the burden of inflation](https://unctad.org/publication/strait-hormuz-disruptions-soaring-fuel-prices-and-burden-inflation) – the publication page this minisite is made for. The report is not yet published, so the page and the report PDF (`full_report_url` in `src/meta.json`) return an error until UNCTAD publishes them; until then the minisite is only available as the live demo above.
+* [Strait of Hormuz Disruptions: soaring fuel prices and the burden of inflation](https://unctad.org/publication/strait-hormuz-disruptions-soaring-fuel-prices-and-burden-inflation) – the publication page this minisite is made for.
 
 ## Rights of usage
 
