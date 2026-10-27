@@ -19,7 +19,7 @@ export default function Intro() {
     const stop = onceVisible(
       sec,
       instant => {
-        sec.classList.add('is-playing');
+        sec.querySelector('.block--intro').classList.add('is-playing');
         if (instant) {
           for (const p of lines) p.classList.add('is-in');
           return;

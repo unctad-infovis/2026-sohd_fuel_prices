@@ -20,7 +20,7 @@ Read `README.md` first for the overview, status and content workflow; the file m
 * One file per chart/section: `OilChart`, `FuelsChart`, `MapScrolly` (scrolly steps) with `FuelMap` (official UN map: Highcharts + map-tools; only economies above the 20% threshold are highlighted), `TornadoChart` (vulnerable economies), `TankChart` (cost of a tank), `GapChart` (inflation), `GlobeTrio` (regional inflation), `TagsChart` (households), `KeyConsiderations`, `Intro`, `Statement` (`PumpStatement`, `CostStatement`).
 * `Sprite.jsx` + `sprite.svg` – inline SVG symbols; must be in the same document because `url(#fp-hatch-yellow)` and `<use href="#ic-*">` need local ids.
 * `FuelPrices.css` – all section styles (scoped under `#app-root-2026-sohd_fuel_prices .app`). `Header/Footer/SlideNav` `.jsx/.css` – adapted from the storyboard.
-* `src/jsx/App.css` – `:root` extras and the `.fp_container` moire/gradient background.
+* `src/jsx/App.css` – design-token extras only. The moire/gradient page background lives once on `.app` in `FuelPrices.css`; do not repaint it on `.fp_container` (that doubled the lines and made the page noisier than the storyboard).
 * Data: `public/assets/data/2026-sohd_fuel_prices_data.json`. Images: `public/assets/img/2026-sohd_fuel_prices_{main,guterres,unctad_logo_white,unctad_logo_black}`.
 
 ## Gotchas
