@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Block from './Block.jsx';
 import { Accent, ChartHeader, ChartMeta } from './ChartParts.jsx';
 import { onceVisible, tween, useFuelData } from './helpers.js';
@@ -9,20 +9,31 @@ export default function TornadoChart() {
   const ref = useRef(null);
   const L = payload?.data.ldc;
   const mx = L ? d3.max(L, d => Math.max(d.d, d.g)) : 1;
+  const [sort, setSort] = useState('d'); // 'd' keeps the data order (diesel), 'g' orders by gasoline
+  const from = useRef(null);
+  const rows = L ? L.map((d, i) => ({ ...d, i })) : [];
+  if (sort === 'g') rows.sort((a, b) => b.g - a.g);
+
+  // Rows slide to their new places when the order changes (the layout effect runs after every render but only acts after a click)
+  const reorder = to => {
+    if (to === sort) return;
+    from.current = new Map([...ref.current.querySelectorAll('.tornado_row')].map(r => [r.dataset.n, r.getBoundingClientRect().top]));
+    setSort(to);
+  };
+  useLayoutEffect(() => {
+    if (!from.current) return;
+    const before = from.current;
+    from.current = null;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (const r of ref.current.querySelectorAll('.tornado_row')) {
+      const dy = before.get(r.dataset.n) - r.getBoundingClientRect().top;
+      if (dy) r.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 600, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+    }
+  });
 
   useEffect(() => {
     const el = ref.current;
     if (!L || !el) return undefined;
-    // Value labels move outside the bar when the bar is too short to hold them
-    const fit = () => {
-      for (const c of el.querySelectorAll('.tornado_cell')) {
-        const b = c.querySelector('.tornado_value');
-        const w = c.clientWidth * Number(c.style.getPropertyValue('--fp-s'));
-        c.classList.toggle('is-out', w < b.offsetWidth + 10);
-      }
-    };
-    fit();
-    window.addEventListener('resize', fit);
     const stop = onceVisible(
       el,
       instant => {
@@ -44,10 +55,7 @@ export default function TornadoChart() {
       },
       0.15
     );
-    return () => {
-      window.removeEventListener('resize', fit);
-      stop();
-    };
+    return stop;
   }, [L]);
 
   const label = L ? `Increase of local retail prices of diesel and gasoline in least developed countries: ${L.map(d => `${d.n}, diesel +${d.d}%, gasoline +${d.g}%`).join('; ')}.` : undefined;
@@ -62,41 +70,43 @@ export default function TornadoChart() {
           </>
         }
       />
-      <div aria-label={label} className="chart tornado" ref={ref} role="img">
+      <div className="chart tornado" ref={ref}>
         {L && (
           <>
-            <div aria-hidden="true" className="tornado_head">
-              <span className="tornado_fuel tornado_fuel--d">
+            <div className="tornado_head">
+              <button aria-pressed={sort === 'd'} className="tornado_fuel tornado_fuel--d" onClick={() => reorder('d')} type="button">
                 Diesel
                 <svg aria-hidden="true" className="flip">
                   <use href="#ic-truck" />
                 </svg>
-              </span>
+              </button>
               <span />
-              <span className="tornado_fuel tornado_fuel--g">
+              <button aria-pressed={sort === 'g'} className="tornado_fuel tornado_fuel--g" onClick={() => reorder('g')} type="button">
                 <svg aria-hidden="true">
                   <use href="#ic-car" />
                 </svg>
                 Gasoline
-              </span>
+              </button>
             </div>
-            {L.map((d, i) => (
-              <div aria-hidden="true" className="tornado_row" key={d.n} style={{ '--fp-i': i }}>
-                <div className="tornado_cell tornado_cell--d" style={{ '--fp-s': (d.d / mx).toFixed(4) }}>
-                  <span className="tornado_bar" />
-                  <b className="tornado_value" data-v={d.d}>
-                    {d.d}%
-                  </b>
+            <div aria-label={label} className="tornado_rows" role="img">
+              {rows.map(d => (
+                <div aria-hidden="true" className="tornado_row" data-n={d.n} key={d.n} style={{ '--fp-i': d.i }}>
+                  <div className="tornado_cell tornado_cell--d" style={{ '--fp-s': (d.d / mx).toFixed(4) }}>
+                    <span className="tornado_bar" />
+                    <b className="tornado_value" data-v={d.d}>
+                      {d.d}%
+                    </b>
+                  </div>
+                  <div className="tornado_name">{d.n}</div>
+                  <div className="tornado_cell tornado_cell--g" style={{ '--fp-s': (d.g / mx).toFixed(4) }}>
+                    <span className="tornado_bar" />
+                    <b className="tornado_value" data-v={d.g}>
+                      {d.g}%
+                    </b>
+                  </div>
                 </div>
-                <div className="tornado_name">{d.n}</div>
-                <div className="tornado_cell tornado_cell--g" style={{ '--fp-s': (d.g / mx).toFixed(4) }}>
-                  <span className="tornado_bar" />
-                  <b className="tornado_value" data-v={d.g}>
-                    {d.g}%
-                  </b>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </>
         )}
       </div>

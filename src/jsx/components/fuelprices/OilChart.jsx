@@ -19,7 +19,7 @@ export default function OilChart() {
     const W = el.clientWidth || 800;
     const narrow = W < 600;
     const H = Math.max(250, Math.min(370, Math.round(W * 0.36))) + (narrow ? 34 : 0);
-    const m = { b: 46, l: 40, r: 86, t: narrow ? 64 : 30 }; // Narrow: headroom for the three-line conflict label above the plot
+    const m = { b: 46, l: 40, r: narrow ? 22 : 86, t: narrow ? 64 : 30 }; // Narrow: headroom for the three-line conflict label above the plot, and no side room for the end value (it sits above the dot)
     const x = d3.scaleUtc([T[0], T[n - 1]], [m.l, W - m.r]);
     const y = d3.scaleLinear([0, Math.ceil(d3.max(o.a) / 10) * 10 + 4], [H - m.b, m.t]);
     const mou0 = Date.UTC(2026, 5, 15);
@@ -120,8 +120,9 @@ export default function OilChart() {
       .attr('r', 5);
     ep.append('text')
       .attr('class', 'value value--blue')
-      .attr('x', x(T[n - 1]) + 12)
-      .attr('y', y(o.a[n - 1]) + 6)
+      .attr('x', x(T[n - 1]) + (narrow ? 0 : 12))
+      .attr('y', y(o.a[n - 1]) + (narrow ? -14 : 6))
+      .attr('text-anchor', narrow ? 'middle' : 'start')
       .text(Math.round(o.a[n - 1]));
     const head = svg.append('circle').attr('class', 'oil_head').attr('r', 5.5).attr('cx', -20).attr('cy', -20);
     // Sequence: the line stops at the start of the conflict, then runs to today; the MoU band appears as the line reaches it

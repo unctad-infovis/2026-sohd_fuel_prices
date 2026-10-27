@@ -96,21 +96,22 @@ export default function GapChart() {
       .attr('clip-path', 'url(#fp-gap-clip)');
     svg.append('path').attr('class', 'gap_line gap_line--dev').attr('d', line(A)).attr('clip-path', 'url(#fp-gap-clip)');
     svg.append('path').attr('class', 'gap_line gap_line--dvd').attr('d', line(B)).attr('clip-path', 'url(#fp-gap-clip)');
+    // Narrow: the start values sit above and below their dots, since the left side is taken by the y-axis labels
     const fsv = narrow ? 'var(--un-font-size-xxxs)' : 'var(--un-font-size-xxs)';
     svg
       .append('text')
       .attr('class', 'gap_dev')
-      .attr('x', x(T[0]) - 14)
-      .attr('y', y(A[0]) - 6)
-      .attr('text-anchor', 'end')
+      .attr('x', narrow ? x(T[0]) : x(T[0]) - 14)
+      .attr('y', y(A[0]) + (narrow ? -13 : -6))
+      .attr('text-anchor', narrow ? 'middle' : 'end')
       .style('font-size', fsv)
       .text(`${A[0].toFixed(1)}%`);
     svg
       .append('text')
       .attr('class', 'gap_dvd')
-      .attr('x', x(T[0]) - 14)
-      .attr('y', y(B[0]) + 16)
-      .attr('text-anchor', 'end')
+      .attr('x', narrow ? x(T[0]) : x(T[0]) - 14)
+      .attr('y', y(B[0]) + (narrow ? 21 : 16))
+      .attr('text-anchor', narrow ? 'middle' : 'end')
       .style('font-size', fsv)
       .text(`${B[0].toFixed(1)}%`);
     // Open circles mark where the lines start, like the end points
