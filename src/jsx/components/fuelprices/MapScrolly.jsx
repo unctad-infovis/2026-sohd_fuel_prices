@@ -4,6 +4,7 @@ import Block from './Block.jsx';
 import { ChartMeta } from './ChartParts.jsx';
 import FuelMap from './FuelMap.jsx';
 import { fmtInt, isStill, tween, useFuelData, useTopology } from './helpers.js';
+import MapFind from './MapFind.jsx';
 import { mapClasses, THRESHOLD } from './mapClasses.js';
 
 const FUEL_NAME = { d: 'diesel', g: 'gasoline' };
@@ -17,6 +18,7 @@ export default function MapScrolly() {
   const payload = useFuelData();
   const topology = useTopology();
   const [mode, setMode] = useState('d');
+  const [found, setFound] = useState(null);
   const boxRef = useRef(null);
   const stickyRef = useRef(null);
   const counted = useRef({});
@@ -82,7 +84,7 @@ export default function MapScrolly() {
           <span className="maps_big">
             <span className="maps_count">{stats ? fmtInt(stats[m].hot) : ''}</span> <span className="maps_unit">countries</span>
           </span>{' '}
-          experienced increases in local {FUEL_NAME[m]} prices by more than {THRESHOLD}%.
+          experienced increases in local <span className="maps_hl">{FUEL_NAME[m]}</span> prices by more than {THRESHOLD}%.
         </h3>
       </div>
     </div>
@@ -112,8 +114,9 @@ export default function MapScrolly() {
             </li>
           </ul>
           <figure className="chart map maps_chart">
-            <FuelMap mode={mode} rows={rows} topology={topology} />
+            <FuelMap foundCode={found ? String(found.c).padStart(3, '0') : null} mode={mode} rows={rows} topology={topology} />
           </figure>
+          {payload && <MapFind classes={legend} countries={payload.data.countries} found={found} onFound={setFound} />}
         </div>
       </div>
       <ChartMeta

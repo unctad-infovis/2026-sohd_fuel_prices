@@ -29,12 +29,14 @@ const noDataFill = () => ({
 });
 
 /** UN map of the change in local fuel prices, coloured by class (blues up to the threshold, reds above it). */
-export default function FuelMap({ mode, rows, topology }) {
+export default function FuelMap({ foundCode, mode, rows, topology }) {
   const containerRef = useRef(null);
   const chartRef = useRef(null);
   const dataRef = useRef(null);
   const modeRef = useRef(mode);
   modeRef.current = mode;
+  const foundRef = useRef(foundCode);
+  foundRef.current = foundCode;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -51,8 +53,10 @@ export default function FuelMap({ mode, rows, topology }) {
         const source = data.find(row => row.code === (BORROWS[code] || code));
         // getColor reads the economy's own value from its properties
         region.properties.value = own ? own.value : null;
+        const isFound = code === foundRef.current;
         return {
-          borderWidth: 0,
+          borderColor: tokenColor('grey-darkest'),
+          borderWidth: isFound ? 1.8 : 0,
           code,
           color: getColor(region.properties, data, CHINA_AREAS, colorFromValue),
           id: code,
@@ -111,10 +115,13 @@ export default function FuelMap({ mode, rows, topology }) {
     };
   }, [rows, topology]);
 
-  // Switching fuel only re-colours the economies; the highlighted set changes, the rest stays put
+  // Switching fuel only re-colours the economies; the economy found by the search gets an outline and is drawn above its neighbours
   useEffect(() => {
-    if (chartRef.current && dataRef.current) chartRef.current.series[0].setData(dataRef.current(mode), true, false);
-  }, [mode]);
+    const series = chartRef.current?.series[0];
+    if (!series || !dataRef.current) return;
+    series.setData(dataRef.current(mode), true, false);
+    if (foundCode) series.points.find(p => p.options.code === foundCode)?.graphic?.toFront();
+  }, [mode, foundCode]);
 
   return <div ref={containerRef} />;
 }

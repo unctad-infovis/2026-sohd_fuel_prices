@@ -688,11 +688,20 @@
     }
     .maps_big {
       align-items: baseline;
-      color: var(--un-color-red-text);
       display: flex;
       flex-wrap: wrap;
       gap: 0 10px;
       margin-bottom: 8px;
+      width: fit-content;
+    }
+    .maps_big,
+    .maps_hl {
+      -webkit-background-clip: text;
+      background: linear-gradient(90deg, var(--un-color-yellow), var(--un-color-orange-brand), var(--un-color-red));
+      background-clip: text;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      color: transparent;
     }
     .maps_count {
       font-size: clamp(var(--un-font-size-xxxl), 5vw, calc(var(--un-font-size-xxxxl) * 1.2));
@@ -732,9 +741,6 @@
     }
     .maps_sticky .classes {
       justify-content: center;
-    }
-    .maps_caption_fuel {
-      color: var(--un-color-red-text);
     }
     .maps_chart {
       margin-left: 0;
@@ -1359,6 +1365,191 @@
       .key_body {
         opacity: 1;
         transform: none;
+      }
+    }
+  }
+  .maps {
+    .maps_find {
+      background: #fff;
+      border: 1px solid color-mix(in srgb, var(--un-color-blue-darkest) 10%, transparent);
+      border-radius: 10px;
+      bottom: 2%;
+      box-shadow:
+        0 1px 2px color-mix(in srgb, var(--un-color-blue-darkest) 6%, transparent),
+        0 10px 30px color-mix(in srgb, var(--un-color-blue-darkest) 10%, transparent);
+      left: 0;
+      padding: 12px;
+      position: absolute;
+      width: min(220px, 23%);
+      z-index: 2;
+      @media (max-width: 860px) {
+        margin-top: 6px;
+        position: static;
+        width: auto;
+      }
+      .maps_find_label {
+        color: var(--un-color-grey-text);
+        display: block;
+        font-size: var(--un-font-size-xxxs);
+        font-weight: var(--un-font-weight-bolder);
+        letter-spacing: 0.08em;
+        margin: 0 0 8px 2px;
+        text-transform: uppercase;
+      }
+      .maps_find_field {
+        position: relative;
+      }
+      .maps_find_icon {
+        fill: none;
+        height: 16px;
+        left: 12px;
+        pointer-events: none;
+        position: absolute;
+        stroke: var(--un-color-grey-text);
+        stroke-linecap: round;
+        stroke-width: 2;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+      }
+      .maps_find_input {
+        appearance: none;
+        background: var(--un-color-grey-lightest);
+        border: 1px solid transparent;
+        border-radius: 20px;
+        color: var(--un-color-blue-darkest);
+        font: inherit;
+        font-size: var(--un-font-size-xxs);
+        height: 38px;
+        padding: 0 34px 0 36px;
+        transition:
+          background 0.2s var(--fp-ease),
+          border-color 0.2s var(--fp-ease),
+          box-shadow 0.2s var(--fp-ease);
+        width: 100%;
+        &::placeholder {
+          color: var(--un-color-grey-text);
+        }
+        &:hover {
+          border-color: var(--un-color-grey-light);
+        }
+        &:focus {
+          background: #fff;
+          border-color: var(--un-color-blue);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--un-color-blue) 20%, transparent);
+          outline: none;
+        }
+      }
+      .maps_find_clear {
+        align-items: center;
+        background: none;
+        border: 0;
+        border-radius: 50%;
+        color: var(--un-color-grey-text);
+        cursor: pointer;
+        display: flex;
+        height: 26px;
+        justify-content: center;
+        position: absolute;
+        right: 6px;
+        top: 6px;
+        width: 26px;
+        &:hover {
+          background: var(--un-color-grey-light);
+          color: var(--un-color-blue-darkest);
+        }
+        svg {
+          fill: none;
+          height: 14px;
+          stroke: currentColor;
+          stroke-linecap: round;
+          stroke-width: 2;
+          width: 14px;
+        }
+      }
+      .maps_find_list {
+        background: #fff;
+        border: 1px solid color-mix(in srgb, var(--un-color-blue-darkest) 10%, transparent);
+        border-radius: 10px;
+        bottom: calc(100% + 6px);
+        box-shadow: 0 10px 30px color-mix(in srgb, var(--un-color-blue-darkest) 14%, transparent);
+        left: 0;
+        list-style: none;
+        margin: 0;
+        max-height: 228px;
+        overflow-y: auto;
+        padding: 4px;
+        position: absolute;
+        right: 0;
+        z-index: 3;
+        @media (max-width: 860px) {
+          max-height: 164px;
+        }
+        li {
+          border-radius: 6px;
+          color: var(--un-color-blue-darkest);
+          cursor: pointer;
+          font-size: var(--un-font-size-xxs);
+          padding: 7px 10px;
+          &.is-on {
+            background: var(--un-color-blue-lightest);
+          }
+          b {
+            font-weight: var(--un-font-weight-bolder);
+          }
+        }
+        .maps_find_none {
+          color: var(--un-color-grey-text);
+          cursor: default;
+        }
+      }
+      .maps_find_card:not(:empty) {
+        border-top: 1px solid var(--un-color-grey-lightest);
+        margin-top: 12px;
+        padding: 10px 2px 0;
+      }
+      .maps_find_name {
+        color: var(--un-color-blue-darkest);
+        font-size: var(--un-font-size-xs);
+        font-weight: var(--un-font-weight-boldest);
+        line-height: var(--un-line-height-normal);
+      }
+      .maps_find_group {
+        color: var(--un-color-grey-text);
+        font-size: var(--un-font-size-xxxs);
+        margin: 2px 0 8px;
+      }
+      .maps_find_values {
+        margin: 0;
+        div {
+          align-items: baseline;
+          display: flex;
+          justify-content: space-between;
+          padding: 3px 0;
+        }
+        dt {
+          color: var(--un-color-grey-darkest);
+          font-size: var(--un-font-size-xxs);
+        }
+        dd {
+          color: var(--un-color-blue-darkest);
+          font-size: var(--un-font-size-xs);
+          font-variant-numeric: tabular-nums;
+          font-weight: var(--un-font-weight-boldest);
+          margin: 0;
+        }
+        i {
+          border: 1px solid color-mix(in srgb, var(--un-color-blue-darkest) 18%, transparent);
+          border-radius: 2px;
+          display: inline-block;
+          height: 10px;
+          margin-right: 7px;
+          vertical-align: 0;
+          width: 10px;
+        }
+        .maps_find_key--none {
+          background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--un-color-grey) 15%, var(--un-color-grey-light)) 0 1px, #fff 1px 3px);
+        }
       }
     }
   }
