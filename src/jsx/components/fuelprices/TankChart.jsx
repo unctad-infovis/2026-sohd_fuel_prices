@@ -28,7 +28,7 @@ export default function TankChart() {
     const parked = `M${ox} ${oy} C${ox + 40} ${oy + 46} ${hk + 46} ${G - 23} ${hk} ${hy}`;
     const active = `M${ox} ${oy} C${ox + 55} ${oy + 20} ${fx - 95} ${G + 6} ${fx} ${fy}`;
     // ILL holds the car and pump drawings as SVG markup
-    scene.innerHTML = `<svg viewBox="0 0 760 360" role="img" aria-label="A car drives to a fuel pump; filling 40 litres of fuel now costs an extra 10% of a month's income in low-income countries">
+    scene.innerHTML = `<svg viewBox="0 0 760 360" role="img" aria-label="A car drives to a fuel pump; filling 40 litres of diesel now costs an extra 10% of a month's income in low-income countries">
     <rect class="tank_ground" x="0" y="${G}" width="760" height="7"/>
     <g transform="translate(${PX},${G}) scale(${PK})">${ILL.pump}
       <rect class="tank_display_box" x="-34" y="-161" width="54" height="30" rx="2"/><text class="tank_display" data-role="display" x="-7" y="-139" text-anchor="middle" style="font-size:20px">+0%</text></g>
@@ -136,7 +136,7 @@ export default function TankChart() {
   return (
     <Block className="block--tank" id="fp-tank" nav="Cost of a tank">
       <ChartHeader
-        subtitle="Increase in the cost of 40 litres of fuel in per cent of monthly gross domestic product per capita."
+        subtitle="Increase in the cost of 40 litres of diesel in per cent of monthly gross domestic product per capita."
         title={
           <>
             Filling a car tank now takes <Accent>an extra 10% of people’s income</Accent> in poor countries.
@@ -148,7 +148,7 @@ export default function TankChart() {
         <div className="income" ref={incomeRef} />
       </div>
       <ChartMeta
-        note="Change of the local cost of 40 litres of fuel since the start of the Middle East conflict until 19 October 2026, compared to the six months before the conflict (weekly, 1 September 2025 – 23 February 2026) based on fuel prices and GDP in local currencies. Countries are classified according to the World Bank income groups."
+        note="Change of the local cost of 40 litres of diesel since the start of the Middle East conflict until 19 October 2026, compared to the six months before the conflict (weekly, 1 September 2025 – 23 February 2026) based on diesel prices and GDP in local currencies. Countries are classified according to the World Bank income groups."
         source="UN Trade and Development (UNCTAD), based on Global Petrol Prices, national sources, International Monetary Fund and World Bank."
       />
     </Block>

@@ -63,10 +63,10 @@ export default function OilChart() {
       .append('use')
       .attr('data-ev', 'burst')
       .attr('href', '#ic-burst')
-      .attr('x', cx - 21)
-      .attr('y', y(0) - 30 + 4)
-      .attr('width', 42)
-      .attr('height', 30);
+      .attr('x', cx - 19)
+      .attr('y', y(0) - 28)
+      .attr('width', 38)
+      .attr('height', 28);
     // Icon sized to the Islamabad MoU band, label in the empty lower part of the band
     const bw = x(mou1) - x(mou0);
     const iw = Math.max(14, Math.min(32, bw - 6));
@@ -123,29 +123,18 @@ export default function OilChart() {
       .attr('x', x(T[n - 1]) + 12)
       .attr('y', y(o.a[n - 1]) + 6)
       .text(Math.round(o.a[n - 1]));
-    // Highest price: labelled like the first and the latest one, revealed when the line passes it
-    const kMax = d3.maxIndex(o.a);
-    const xPeak = x(T[kMax]);
-    const pg = svg.append('g').attr('data-ev', 'peak');
-    pg.append('circle').attr('class', 'point point--blue').attr('cx', xPeak).attr('cy', y(o.a[kMax])).attr('r', 5);
-    pg.append('text')
-      .attr('class', 'value value--blue')
-      .attr('x', xPeak)
-      .attr('y', y(o.a[kMax]) - 14)
-      .attr('text-anchor', 'middle')
-      .text(Math.round(o.a[kMax]));
     const head = svg.append('circle').attr('class', 'oil_head').attr('r', 5.5).attr('cx', -20).attr('cy', -20);
-    // Sequence: conflict, MoU, today (the line passes the highest price without stopping)
+    // Sequence: the line stops at the start of the conflict, then runs to today; the MoU band appears as the line reaches it
     const stops = [
       { dur: 1100, evs: ['burst', 'conflict'], pause: 1100, x: CONFLICT },
-      { evs: ['mou'], pause: 1300, x: mou0 },
       { evs: ['end'], pause: 0, x: T[n - 1] }
     ];
+    const xMou = x(mou0);
     const show = ev => svg.selectAll(`[data-ev="${ev}"]`).classed('is-on', true);
     const finish = () => {
       clip.attr('width', W);
       head.style('display', 'none');
-      for (const ev of ['start', 'peak'].concat(...stops.map(s => s.evs))) show(ev);
+      for (const ev of ['start', 'mou'].concat(...stops.map(s => s.evs))) show(ev);
     };
     if (OIL.played || OIL.running) {
       finish();
@@ -169,7 +158,7 @@ export default function OilChart() {
       let xp = x(T[0]);
       const speed = (x(T[n - 1]) - xp) / 4800;
       let i = 0;
-      let peakShown = false;
+      let mouShown = false;
       const seg = () => {
         if (i >= stops.length) {
           OIL.played = true;
@@ -186,9 +175,9 @@ export default function OilChart() {
           t => {
             const e = easeInOut(t);
             xp = xa + (xb - xa) * e;
-            if (!peakShown && xp >= xPeak) {
-              peakShown = true;
-              show('peak');
+            if (!mouShown && xp >= xMou) {
+              mouShown = true;
+              show('mou');
             }
             clip.attr('width', xp + 3);
             head.attr('cx', xp).attr('cy', y(valAt(xp)));
