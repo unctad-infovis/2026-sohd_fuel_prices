@@ -154,6 +154,79 @@ export function useFuelData() {
   return payload;
 }
 
+/** True when position: sticky cannot work for el: an ancestor is a scroll container (overflow hidden/auto/scroll) that never actually scrolls. A host page that sets overflow-x: hidden on both html and body does this, because then body no longer hands its overflow to the viewport. */
+export function stickyBroken(el) {
+  const root = document.documentElement;
+  const rs = getComputedStyle(root);
+  const rootScrolls = rs.overflowX !== 'visible' || rs.overflowY !== 'visible';
+  for (let e = el.parentElement; e && e !== root; e = e.parentElement) {
+    const c = getComputedStyle(e);
+    if (!/hidden|auto|scroll/.test(c.overflowX + c.overflowY)) continue;
+    if (e === document.body && !rootScrolls) continue;
+    if (e.scrollHeight <= e.clientHeight + 1) return true;
+  }
+  return false;
+}
+
+/**
+ * Keeps a position: sticky element in place with position: fixed when sticky is dead (see stickyBroken), the way sticky would: static above the box, fixed at topFn(height) while the box passes, parked at the bottom of the box after it. Does nothing when sticky works. box must be positioned. Returns a cleanup.
+ */
+export function pinFallback(box, el, topFn) {
+  let broken = false;
+  let left = 0;
+  let width = 0;
+  let mode = '';
+  let frame = 0;
+  const set = (position, top, x) => {
+    el.style.position = position;
+    el.style.top = `${top}px`;
+    el.style.left = `${x}px`;
+    el.style.width = `${width}px`;
+  };
+  const reset = () => {
+    mode = '';
+    el.style.position = '';
+    el.style.top = '';
+    el.style.left = '';
+    el.style.width = '';
+  };
+  const update = () => {
+    frame = 0;
+    if (!broken) return;
+    const r = box.getBoundingClientRect();
+    const h = el.offsetHeight;
+    const t = topFn(h);
+    if (r.top >= t) {
+      if (mode) reset();
+    } else if (r.bottom - h <= t) {
+      mode = 'after';
+      set('absolute', r.height - h, left);
+    } else {
+      mode = 'pinned';
+      set('fixed', t, r.left + left);
+    }
+  };
+  const measure = () => {
+    reset();
+    broken = stickyBroken(el);
+    left = el.offsetLeft;
+    width = el.offsetWidth;
+    update();
+  };
+  const onScroll = () => {
+    if (!frame) frame = requestAnimationFrame(update);
+  };
+  const ro = new ResizeObserver(measure);
+  ro.observe(box);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => {
+    ro.disconnect();
+    window.removeEventListener('scroll', onScroll);
+    cancelAnimationFrame(frame);
+    reset();
+  };
+}
+
 /** Calls redraw (debounced) when the window width changes. */
 export function useWidthRedraw(redraw, active) {
   useEffect(() => {

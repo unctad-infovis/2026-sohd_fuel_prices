@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Block from './Block.jsx';
 import { ChartMeta } from './ChartParts.jsx';
 import FuelMap from './FuelMap.jsx';
-import { fmtInt, isStill, tween, useFuelData, useTopology } from './helpers.js';
+import { fmtInt, isStill, pinFallback, tween, useFuelData, useTopology } from './helpers.js';
 import MapFind from './MapFind.jsx';
 import { mapClasses, THRESHOLD } from './mapClasses.js';
 
@@ -65,9 +65,12 @@ export default function MapScrolly() {
     // The steps take the real height of the map, so the texts sit level with it
     const ro = new ResizeObserver(() => box.style.setProperty('--fp-maps-h', `${stickyRef.current.offsetHeight}px`));
     ro.observe(stickyRef.current);
+    // Some host pages make position: sticky impossible; then the map is pinned by hand
+    const unpin = pinFallback(box, stickyRef.current, h => Math.max(0, (window.innerHeight - h) / 2));
     return () => {
       io.disconnect();
       ro.disconnect();
+      unpin();
     };
   }, [stats]);
 

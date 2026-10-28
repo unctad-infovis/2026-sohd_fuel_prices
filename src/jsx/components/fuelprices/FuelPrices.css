@@ -123,6 +123,9 @@
       transform: none;
     }
   }
+  .fp_container {
+    position: relative;
+  }
   /* Reading progress: sticks to the top of the viewport while the report content scrolls, takes no space in the flow. Not named .progress, which the host site's Bootstrap styles as a grey track */
   .read_progress {
     background: transparent;
@@ -640,6 +643,7 @@
     display: grid;
     gap: 28px;
     grid-template-columns: minmax(190px, 22%) 1fr;
+    position: relative;
     @media (max-width: 860px) {
       display: grid;
       gap: 0;

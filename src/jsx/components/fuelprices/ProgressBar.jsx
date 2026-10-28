@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
+import { pinFallback } from './helpers.js';
 
 const CONTAINER = `#app-root-${__PROJECT_NAME__} .fp_container`;
 
 /** Reading progress along the top edge: how far the viewport has travelled through the report content. */
 export default function ProgressBar() {
   const barRef = useRef(null);
+  const trackRef = useRef(null);
 
   useEffect(() => {
     const container = document.querySelector(CONTAINER);
@@ -23,7 +25,9 @@ export default function ProgressBar() {
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
+    const unpin = pinFallback(container, trackRef.current, () => 0);
     return () => {
+      unpin();
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
       cancelAnimationFrame(frame);
@@ -31,7 +35,7 @@ export default function ProgressBar() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="read_progress">
+    <div aria-hidden="true" className="read_progress" ref={trackRef}>
       <span className="read_progress_bar" ref={barRef} />
     </div>
   );
