@@ -103,7 +103,7 @@ export default function MapScrolly() {
           </p>
           <ul className="classes">
             {legend.map(item => (
-              <li className="classes_item" key={item.label}>
+              <li className={`classes_item${item.low ? ' classes_item--low' : ''}`} key={item.label}>
                 <span className="classes_key" style={{ background: item.color }} />
                 {item.label}
               </li>

@@ -25,13 +25,6 @@ function setChinaHover(point, state) {
   }
 }
 
-/** Border lines between economies; map-tools draws them white, here they are light grey. */
-const borderSeries = (name, objectName, dash, topology) => {
-  const series = createMaplineSeries(name, processTopoObject(topology, objectName), dash);
-  series.mapData = series.mapData.map(border => ({ ...border, color: tokenColor('grey-light') }));
-  return series;
-};
-
 /** Hatched fill for economies without data, so it can never be mistaken for a data class. */
 const noDataFill = () => ({
   pattern: {
@@ -58,7 +51,7 @@ export default function FuelMap({ foundCode, mode, rows, topology }) {
     if (!el || !rows || !topology) return undefined;
     const classes = mapClasses();
     const hatch = noDataFill();
-    const colorFromValue = value => (value == null ? hatch : classes.find(c => value <= c.hi).color);
+    const colorFromValue = value => (value == null ? hatch : classes.find(c => value <= c.hi).fill);
     const rowsFor = m => rows.map(r => ({ code: r.code, value: r[m] }));
     const seriesData = m => {
       const data = rowsFor(m);
@@ -114,10 +107,10 @@ export default function FuelMap({ foundCode, mode, rows, topology }) {
           states: { hover: { borderColor: '#fff', borderWidth: 1.8 }, inactive: { enabled: false } },
           type: 'map'
         },
-        borderSeries('dash_borders', 'dashed-borders', 'Dash', topology),
-        borderSeries('dot_borders', 'dotted-borders', 'Dot', topology),
-        borderSeries('dash_dot_borders', 'plain-borders', 'DashDot', topology),
-        borderSeries('solid_borders', 'plain-borders', 'Solid', topology)
+        createMaplineSeries('dash_borders', processTopoObject(topology, 'dashed-borders'), 'Dash'),
+        createMaplineSeries('dot_borders', processTopoObject(topology, 'dotted-borders'), 'Dot'),
+        createMaplineSeries('dash_dot_borders', processTopoObject(topology, 'plain-borders'), 'DashDot'),
+        createMaplineSeries('solid_borders', processTopoObject(topology, 'plain-borders'), 'Solid')
       ],
       subtitle: { text: null },
       title: { text: null },

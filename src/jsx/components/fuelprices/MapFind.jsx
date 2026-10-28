@@ -81,7 +81,7 @@ export default function MapFind({ classes, countries, found, onFound }) {
     }
   };
 
-  const colorOf = v => (v == null ? null : classes.find(c => v <= c.hi)?.color);
+  const colorOf = v => (v == null ? null : classes.find(c => v <= c.hi)?.fill);
   const row = (name, v) => (
     <div key={name}>
       <dt>

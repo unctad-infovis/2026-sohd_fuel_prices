@@ -573,7 +573,7 @@
     }
   }
   .statement {
-    color: #000;
+    color: var(--un-color-blue-darkest);
     font-size: clamp(var(--un-font-size-xl), 4vw, calc(var(--un-font-size-xxxl) * 1.2));
     font-weight: var(--un-font-weight-boldest);
     letter-spacing: -0.025em;
@@ -610,6 +610,9 @@
       align-items: center;
       display: inline-flex;
       gap: 5px;
+    }
+    .classes_item--low {
+      opacity: 0.4;
     }
     .classes_key {
       border: 1px solid color-mix(in srgb, var(--un-color-blue-darkest) 18%, transparent);
@@ -705,7 +708,7 @@
     .maps_fuel {
       --fp-icon: 30px;
       align-items: center;
-      color: var(--un-color-grey-darkest);
+      color: var(--un-color-grey-text);
       display: flex;
       font-size: var(--un-font-size-xxs);
       font-weight: var(--un-font-weight-bolder);
@@ -714,7 +717,7 @@
       margin-bottom: 6px;
       text-transform: uppercase;
       svg {
-        color: var(--un-color-grey-darkest);
+        color: var(--un-color-grey);
         height: var(--fp-icon);
         /* The car and truck glyphs sit low in their icon box; nudged up (translate, so the .flip transform stays) to share the label's centre line */
         translate: 0 calc(var(--fp-icon) * -0.085);
@@ -754,7 +757,7 @@
       letter-spacing: -0.02em;
     }
     .maps_title {
-      color: #000;
+      color: var(--un-color-blue-darkest);
       font-size: clamp(var(--un-font-size-normal), 1.6vw, var(--un-font-size-xl));
       font-weight: var(--un-font-weight-boldest);
       letter-spacing: -0.012em;
@@ -772,7 +775,7 @@
       }
     }
     .maps_caption {
-      color: #000;
+      color: var(--un-color-blue-darkest);
       font-size: var(--un-font-size-xs);
       font-weight: var(--un-font-weight-bold);
       text-align: center;
