@@ -174,10 +174,12 @@ export function stickyBroken(el) {
 export function pinFallback(box, el, topFn) {
   let broken = false;
   let left = 0;
+  let padBottom = 0;
   let width = 0;
   let mode = '';
   let frame = 0;
   const set = (position, top, x) => {
+    el.style.boxSizing = 'border-box';
     el.style.position = position;
     el.style.top = `${top}px`;
     el.style.left = `${x}px`;
@@ -185,6 +187,8 @@ export function pinFallback(box, el, topFn) {
   };
   const reset = () => {
     mode = '';
+    el.style.animation = '';
+    el.style.boxSizing = '';
     el.style.position = '';
     el.style.top = '';
     el.style.left = '';
@@ -198,9 +202,10 @@ export function pinFallback(box, el, topFn) {
     const t = topFn(h);
     if (r.top >= t) {
       if (mode) reset();
-    } else if (r.bottom - h <= t) {
+    } else if (r.bottom - padBottom - h <= t) {
       mode = 'after';
-      set('absolute', r.height - h, left);
+      el.style.animation = 'none'; // an animation of top (BackToTop bounces) would beat the inline top
+      set('absolute', r.height - padBottom - h, left);
     } else {
       mode = 'pinned';
       set('fixed', t, r.left + left);
@@ -210,6 +215,7 @@ export function pinFallback(box, el, topFn) {
     reset();
     broken = stickyBroken(el);
     left = el.offsetLeft;
+    padBottom = Number.parseFloat(getComputedStyle(box).paddingBottom) || 0;
     width = el.offsetWidth;
     update();
   };
